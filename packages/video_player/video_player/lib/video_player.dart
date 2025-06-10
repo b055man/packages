@@ -59,6 +59,8 @@ class VideoPlayerValue {
     this.rotationCorrection = 0,
     this.errorDescription,
     this.isCompleted = false,
+    this.selectedAudioTrack,
+    this.availableAudioTracks = const <String>[],
   });
 
   /// Returns an instance for a video that hasn't been loaded.
@@ -133,6 +135,10 @@ class VideoPlayerValue {
   /// Indicates whether or not the video has been loaded and is ready to play.
   final bool isInitialized;
 
+  final (int group, int trackIndex)? selectedAudioTrack;
+
+  final List<String> availableAudioTracks;
+
   /// Indicates whether or not the video is in an error state. If this is true
   /// [errorDescription] should have information about the problem.
   bool get hasError => errorDescription != null;
@@ -172,6 +178,8 @@ class VideoPlayerValue {
     int? rotationCorrection,
     String? errorDescription = _defaultErrorDescription,
     bool? isCompleted,
+    (int group, int trackIndex)? selectedAudioTrack,
+    List<String>? availableAudioTracks,
   }) {
     return VideoPlayerValue(
       duration: duration ?? this.duration,
@@ -191,6 +199,8 @@ class VideoPlayerValue {
           ? errorDescription
           : this.errorDescription,
       isCompleted: isCompleted ?? this.isCompleted,
+      selectedAudioTrack: selectedAudioTrack ?? this.selectedAudioTrack,
+      availableAudioTracks: availableAudioTracks ?? this.availableAudioTracks,
     );
   }
 
@@ -210,7 +220,9 @@ class VideoPlayerValue {
         'volume: $volume, '
         'playbackSpeed: $playbackSpeed, '
         'errorDescription: $errorDescription, '
-        'isCompleted: $isCompleted),';
+        'isCompleted: $isCompleted), '
+        'selectedAudioTrack: $selectedAudioTrack, '
+        'availableAudioTracks: [${availableAudioTracks.join(', ')}], ';
   }
 
   @override
@@ -464,6 +476,7 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
             isInitialized: event.duration != null,
             errorDescription: null,
             isCompleted: false,
+            availableAudioTracks: event.audioTracks,
           );
           assert(
             !initializingCompleter.isCompleted,
@@ -669,6 +682,16 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
   Future<void> setVolume(double volume) async {
     value = value.copyWith(volume: volume.clamp(0.0, 1.0));
     await _applyVolume();
+  }
+
+  Future<void> setAudioTrack(int group, int trackIndex) async {
+    if (_isDisposedOrNotInitialized) {
+      return;
+    }
+    value = value.copyWith(
+      selectedAudioTrack: (group, trackIndex),
+    );
+    await _videoPlayerPlatform.setAudioTrack(_textureId, group, trackIndex);
   }
 
   /// Sets the playback speed of [this].
