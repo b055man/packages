@@ -107,6 +107,12 @@ abstract class VideoPlayerPlatform extends PlatformInterface {
   Future<void> setWebOptions(int textureId, VideoPlayerWebOptions options) {
     throw UnimplementedError('setWebOptions() has not been implemented.');
   }
+
+  /// Sets the audio mode to mix with other sources.
+  Future<void> setAudioTrack(int playerId, int groupId, int trackId) {
+    throw UnimplementedError('setAudioTrack() has not been implemented.');
+  }
+
 }
 
 class _PlaceholderImplementation extends VideoPlayerPlatform {}
@@ -218,6 +224,7 @@ class VideoEvent {
     this.rotationCorrection,
     this.buffered,
     this.isPlaying,
+    this.audioTracks
   });
 
   /// The type of the event.
@@ -247,6 +254,8 @@ class VideoEvent {
   ///
   /// Only used if [eventType] is [VideoEventType.isPlayingStateUpdate].
   final bool? isPlaying;
+
+  final List<String>? audioTracks;
 
   @override
   bool operator ==(Object other) {
