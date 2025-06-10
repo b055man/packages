@@ -115,6 +115,15 @@ class AndroidVideoPlayer extends VideoPlayerPlatform {
   }
 
   @override
+  Future<void> setAudioTrack(int textureId, int groupId, int trackId) {
+    return _api.setAudioTrack(SetAudioTrackMessage(
+      textureId: textureId,
+      groupId: groupId,
+      trackId: trackId,
+    ));
+  }
+
+  @override
   Stream<VideoEvent> videoEventsFor(int textureId) {
     return _eventChannelFor(textureId)
         .receiveBroadcastStream()
@@ -122,12 +131,15 @@ class AndroidVideoPlayer extends VideoPlayerPlatform {
       final Map<dynamic, dynamic> map = event as Map<dynamic, dynamic>;
       switch (map['event']) {
         case 'initialized':
+          final rawAudioTracks = map['audioTracks'] as List<Map<String,dynamic>>?;
+          final audioTracks = rawAudioTracks?.map((Map<String, dynamic> track) => "${track['group']}.${track['index']}").toList();
           return VideoEvent(
             eventType: VideoEventType.initialized,
             duration: Duration(milliseconds: map['duration'] as int),
             size: Size((map['width'] as num?)?.toDouble() ?? 0.0,
                 (map['height'] as num?)?.toDouble() ?? 0.0),
             rotationCorrection: map['rotationCorrection'] as int? ?? 0,
+            audioTracks: audioTracks,
           );
         case 'completed':
           return VideoEvent(

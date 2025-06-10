@@ -42,6 +42,13 @@ class PositionMessage {
   int position;
 }
 
+class SetAudioTrackMessage {
+  SetAudioTrackMessage(this.textureId, this.groupId, this.trackId);
+  int textureId;
+  int groupId;
+  int trackId;
+}
+
 class CreateMessage {
   CreateMessage({required this.httpHeaders});
   String? asset;
@@ -69,4 +76,5 @@ abstract class AndroidVideoPlayerApi {
   void seekTo(PositionMessage msg);
   void pause(TextureMessage msg);
   void setMixWithOthers(MixWithOthersMessage msg);
+  void setAudioTrack(SetAudioTrackMessage msg);
 }
