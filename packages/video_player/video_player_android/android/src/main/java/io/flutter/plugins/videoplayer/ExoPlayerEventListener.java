@@ -72,6 +72,7 @@ final class ExoPlayerEventListener implements Player.Listener {
     List<Map<String, Object>> audioTracks = new ArrayList<>();
     for (int i = 0; i < exoPlayer.getCurrentTracks().getGroups().size(); i++) {
       TrackGroup trackGroup = exoPlayer.getCurrentTracks().getGroups().get(i).getMediaTrackGroup();
+      System.err.println("iterating through track " + i + ", type: " + trackGroup.type);
       if (trackGroup.type == C.TRACK_TYPE_AUDIO) {
         for (int j = 0; j < trackGroup.length; j++) {
           Format format = trackGroup.getFormat(j);
@@ -80,6 +81,7 @@ final class ExoPlayerEventListener implements Player.Listener {
           trackInfo.put("index", j);
           trackInfo.put("language", format.language);
           trackInfo.put("label", format.label);
+          trackInfo.put("combined", i + "." + j + "." + format.language + "." + format.label);
           audioTracks.add(trackInfo);
         }
       }
