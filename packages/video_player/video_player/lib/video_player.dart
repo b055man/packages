@@ -244,7 +244,9 @@ class VideoPlayerValue {
           size == other.size &&
           rotationCorrection == other.rotationCorrection &&
           isInitialized == other.isInitialized &&
-          isCompleted == other.isCompleted;
+          isCompleted == other.isCompleted &&
+          availableAudioTracks == other.availableAudioTracks &&
+          selectedAudioTrack == other.selectedAudioTrack;
 
   @override
   int get hashCode => Object.hash(
@@ -263,6 +265,8 @@ class VideoPlayerValue {
         rotationCorrection,
         isInitialized,
         isCompleted,
+        availableAudioTracks,
+        selectedAudioTrack,
       );
 }
 
@@ -522,6 +526,7 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
     }
 
     void errorListener(Object obj) {
+      print("error $obj");
       final PlatformException e = obj as PlatformException;
       value = VideoPlayerValue.erroneous(e.message!);
       _timer?.cancel();
