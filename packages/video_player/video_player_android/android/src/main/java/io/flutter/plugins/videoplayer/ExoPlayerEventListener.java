@@ -5,10 +5,20 @@
 package io.flutter.plugins.videoplayer;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.OptIn;
+import androidx.media3.common.C;
+import androidx.media3.common.Format;
 import androidx.media3.common.PlaybackException;
 import androidx.media3.common.Player;
+import androidx.media3.common.TrackGroup;
 import androidx.media3.common.VideoSize;
+import androidx.media3.common.util.UnstableApi;
 import androidx.media3.exoplayer.ExoPlayer;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 final class ExoPlayerEventListener implements Player.Listener {
   private final ExoPlayer exoPlayer;
@@ -38,7 +48,7 @@ final class ExoPlayerEventListener implements Player.Listener {
     }
   }
 
-  @SuppressWarnings("SuspiciousNameCombination")
+  @OptIn(markerClass = UnstableApi.class) @SuppressWarnings("SuspiciousNameCombination")
   private void sendInitialized() {
     if (isInitialized) {
       return;
@@ -63,7 +73,26 @@ final class ExoPlayerEventListener implements Player.Listener {
         rotationCorrection = rotationDegrees;
       }
     }
-    events.onInitialized(width, height, exoPlayer.getDuration(), rotationCorrection);
+
+    List<Map<String, Object>> audioTracks = new ArrayList<>();
+    for (int i = 0; i < exoPlayer.getCurrentTracks().getGroups().size(); i++) {
+      TrackGroup trackGroup = exoPlayer.getCurrentTracks().getGroups().get(i).getMediaTrackGroup();
+      System.err.println("iterating through track " + i + ", type: " + trackGroup.type);
+      if (trackGroup.type == C.TRACK_TYPE_AUDIO) {
+        for (int j = 0; j < trackGroup.length; j++) {
+          Format format = trackGroup.getFormat(j);
+          Map<String, Object> trackInfo = new HashMap<>();
+          trackInfo.put("group", i);
+          trackInfo.put("index", j);
+          trackInfo.put("language", format.language);
+          trackInfo.put("label", format.label);
+          trackInfo.put("combined", i + "." + j + "." + format.language + "." + format.label);
+          audioTracks.add(trackInfo);
+        }
+      }
+    }
+
+    events.onInitialized(width, height, exoPlayer.getDuration(), rotationCorrection, audioTracks);
   }
 
   @Override

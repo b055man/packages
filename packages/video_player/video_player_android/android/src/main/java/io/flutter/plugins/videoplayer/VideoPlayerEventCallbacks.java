@@ -8,6 +8,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import io.flutter.plugin.common.EventChannel;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -45,12 +47,17 @@ final class VideoPlayerEventCallbacks implements VideoPlayerCallbacks {
 
   @Override
   public void onInitialized(
-      int width, int height, long durationInMs, int rotationCorrectionInDegrees) {
+      int width, int height, long durationInMs, int rotationCorrectionInDegrees, List<Map<String, Object>> audioTracks) {
     Map<String, Object> event = new HashMap<>();
     event.put("event", "initialized");
     event.put("width", width);
     event.put("height", height);
     event.put("duration", durationInMs);
+    List<String> combinedAudioTracks = new ArrayList<>();
+    for (int i = 0;  i < audioTracks.size(); i++) {
+      combinedAudioTracks.add((String) audioTracks.get(i).get("combined"));
+    }
+    event.put("audioTracks", combinedAudioTracks);
     if (rotationCorrectionInDegrees != 0) {
       event.put("rotationCorrection", rotationCorrectionInDegrees);
     }

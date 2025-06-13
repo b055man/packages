@@ -21,6 +21,7 @@ import io.flutter.plugins.videoplayer.Messages.PlaybackSpeedMessage;
 import io.flutter.plugins.videoplayer.Messages.PositionMessage;
 import io.flutter.plugins.videoplayer.Messages.TextureMessage;
 import io.flutter.plugins.videoplayer.Messages.VolumeMessage;
+import io.flutter.plugins.videoplayer.Messages.SetAudioTrackMessage;
 import io.flutter.view.TextureRegistry;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -190,6 +191,12 @@ public class VideoPlayerPlugin implements FlutterPlugin, AndroidVideoPlayerApi {
   @Override
   public void setMixWithOthers(@NonNull MixWithOthersMessage arg) {
     options.mixWithOthers = arg.getMixWithOthers();
+  }
+
+  @Override
+  public void setAudioTrack(@NonNull SetAudioTrackMessage arg) {
+    VideoPlayer player = videoPlayers.get(arg.getTextureId());
+    player.setAudioTrack(arg.getGroupId().intValue(), arg.getTrackId().intValue());
   }
 
   private interface KeyForAssetFn {

@@ -16,6 +16,8 @@ import androidx.media3.common.AudioAttributes;
 import androidx.media3.common.C;
 import androidx.media3.common.MediaItem;
 import androidx.media3.common.PlaybackParameters;
+import androidx.media3.common.TrackSelectionOverride;
+import androidx.media3.common.Tracks;
 import androidx.media3.exoplayer.ExoPlayer;
 import io.flutter.view.TextureRegistry;
 
@@ -157,6 +159,41 @@ final class VideoPlayer implements TextureRegistry.SurfaceProducer.Callback {
 
   long getPosition() {
     return exoPlayer.getCurrentPosition();
+  }
+
+  void setAudioTrack(int groupId, int trackId/*, boolean enabled*/) {
+      Tracks currentTracks = exoPlayer.getCurrentTracks();
+      // Check if groupId is within bounds and the group exists
+      if (groupId >= 0 && groupId < currentTracks.getGroups().size()) {
+        Tracks.Group group = currentTracks.getGroups().get(groupId);
+
+        // In Kotlin, 'group.type' is an int. 'trackTypes.contains(group.type)' checks if the type is allowed.
+        // 'group.isTrackSupported(trackId, false)' checks if the track is supported.
+        if ((group.getType() == C.TRACK_TYPE_AUDIO) && group.isTrackSupported(trackId, false)) {
+          //if (enabled) {
+            // Create a new TrackSelectionOverride and set it
+            TrackSelectionOverride override = new TrackSelectionOverride(group.getMediaTrackGroup(), trackId);
+            exoPlayer.setTrackSelectionParameters(
+                    exoPlayer.getTrackSelectionParameters().buildUpon()
+                            .setOverrideForType(override)
+                            .build()
+            );
+//          }
+//        else {
+//            // Check if an override for this mediaTrackGroup exists
+//            // and if it contains the specific trackId
+//            if (exoPlayer.getTrackSelectionParameters().overrides.containsKey(group.getMediaTrackGroup()) &&
+//                    exoPlayer.getTrackSelectionParameters().overrides.get(group.getMediaTrackGroup()).trackIndices.contains(trackId)) {
+//              // Clear the override for this mediaTrackGroup
+//              exoPlayer.setTrackSelectionParameters(
+//                      exoPlayer.getTrackSelectionParameters().buildUpon()
+//                              .clearOverride(group.getMediaTrackGroup())
+//                              .build()
+//              );
+//            }
+//          }
+        }
+      }
   }
 
   void dispose() {
