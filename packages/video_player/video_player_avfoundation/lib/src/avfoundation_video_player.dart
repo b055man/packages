@@ -107,6 +107,7 @@ class AVFoundationVideoPlayer extends VideoPlayerPlatform {
       final Map<dynamic, dynamic> map = event as Map<dynamic, dynamic>;
       switch (map['event']) {
         case 'initialized':
+          print('initalized received: $map');
           return VideoEvent(
             eventType: VideoEventType.initialized,
             duration: Duration(milliseconds: map['duration'] as int),
@@ -147,6 +148,14 @@ class AVFoundationVideoPlayer extends VideoPlayerPlatform {
   @override
   Future<void> setMixWithOthers(bool mixWithOthers) {
     return _api.setMixWithOthers(mixWithOthers);
+  }
+
+  @override
+  Future<void> setAudioTrackMessage(int playerId, int groupId, int trackId) {
+    print(
+        'Setting audio track: playerId=$playerId, groupId=$groupId, trackId=$trackId');
+    return _api.setAudioTrack(SetAudioTrackMessage(
+        textureId: playerId, groupId: groupId, trackId: trackId));
   }
 
   EventChannel _eventChannelFor(int textureId) {

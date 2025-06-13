@@ -92,6 +92,8 @@
 // (e.g., after a seek while paused). If YES, the display link should continue to run until the next
 // frame is successfully provided.
 @property(nonatomic, assign) BOOL waitingForFrame;
+@property (nonatomic, strong) NSMutableArray<AVMediaSelectionGroup *> *mediaGroups;
+
 
 - (instancetype)initWithURL:(NSURL *)url
                frameUpdater:(FVPFrameUpdater *)frameUpdater
@@ -445,13 +447,96 @@ NS_INLINE CGFloat radiansToDegrees(CGFloat radians) {
     if (duration == 0) {
       return;
     }
+      
+    NSMutableDictionary *tracks = [NSMutableDictionary dictionary];
+    dispatch_async(dispatch_get_main_queue(), ^{
+            //AVAsset *asset = self.avPlayer.currentItem.asset;
+            NSArray<NSString *> *keysToLoad = @[@"availableMediaCharacteristicsWithMediaSelectionOptions"];
 
+            // Asynchronously load the available media characteristics
+            [asset loadValuesAsynchronouslyForKeys:keysToLoad completionHandler:^{
+                // This completion handler may not be on the main thread, so dispatch back if needed.
+                
+                // Check for errors loading the asset keys
+                NSError *error = nil;
+                AVKeyValueStatus status = [asset statusOfValueForKey:@"availableMediaCharacteristicsWithMediaSelectionOptions" error:&error];
+                if (status != AVKeyValueStatusLoaded || error) {
+                    NSLog(@"Error loading asset characteristics: %@", error);
+                    return;
+                }
+
+                // Use a Dispatch Group to wait for all media groups to be loaded
+                dispatch_group_t group = dispatch_group_create();
+
+                // Reset mediaGroups before populating
+                self.mediaGroups = [NSMutableArray array];
+
+                for (AVMediaCharacteristic characteristic in asset.availableMediaCharacteristicsWithMediaSelectionOptions) {
+                    dispatch_group_enter(group);
+                    [asset loadMediaSelectionGroupForMediaCharacteristic:characteristic completionHandler:^(AVMediaSelectionGroup * _Nullable loadedGroup, NSError * _Nullable loadError) {
+                        if (loadedGroup && !loadError) {
+                            // Using @synchronized to ensure thread-safe modification of shared resources
+                            @synchronized(self) {
+                                NSInteger groupIndex = self.mediaGroups.count;
+                                [self.mediaGroups addObject:loadedGroup];
+
+                                for (NSInteger optionIndex = 0; optionIndex < loadedGroup.options.count; optionIndex++) {
+                                    AVMediaSelectionOption *option = loadedGroup.options[optionIndex];
+                                    if (option.isPlayable) {
+                                        NSString *type = @"";
+                                        if ([option.mediaType isEqualToString:AVMediaTypeAudio]) {
+                                            type = @"audio";
+                                        } else if ([option.mediaType isEqualToString:AVMediaTypeVideo]) {
+                                            type = @"video";
+                                        } else if ([option.mediaType isEqualToString:AVMediaTypeSubtitle] || [option.mediaType isEqualToString:AVMediaTypeClosedCaption]) {
+                                            type = @"sub";
+                                        }
+
+                                        if (type.length > 0) {
+                                            NSString *key = [NSString stringWithFormat:@"%ld.%ld", (long)groupIndex, (long)optionIndex];
+                                            NSString *language = option.locale.localeIdentifier ?: option.extendedLanguageTag ?: @"";
+                                            
+                                            tracks[key] = @{
+                                                @"type": type,
+                                                @"title": option.displayName ?: [NSNull null],
+                                                @"language": language
+                                            };
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        dispatch_group_leave(group);
+                    }];
+                }
+
+                // // This block will be executed only after all groups have been loaded
+                // dispatch_group_notify(group, dispatch_get_main_queue(), ^{
+                //     self.avPlayer.volume = self.volume;
+                //     self.state = 2;
+
+                //     CMTime duration = self.avPlayer.currentItem.duration;
+                //     long durationMs = (duration.value > 0) ? CMTimeGetSeconds(duration) * 1000 : 0;
+                    
+                //     if (self.eventSink) {
+                //         self.eventSink(@{
+                //             @"event": @"mediaInfo",
+                //             @"duration": @(durationMs),
+                //             @"tracks": tracks,
+                //             @"source": self.source ?: [NSNull null]
+                //         });
+                //     }
+                // });
+            }];
+    });
+    
     _isInitialized = YES;
     _eventSink(@{
       @"event" : @"initialized",
       @"duration" : @(duration),
       @"width" : @(width),
-      @"height" : @(height)
+      @"height" : @(height),
+      @"tracks" : tracks,
     });
   }
 }
