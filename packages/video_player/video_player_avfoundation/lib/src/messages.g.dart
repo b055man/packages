@@ -71,12 +71,9 @@ class CreationOptions {
 
 class SetAudioTrackMessage {
   SetAudioTrackMessage({
-    required this.textureId,
     required this.groupId,
     required this.trackId,
   });
-
-  int textureId;
 
   int groupId;
 
@@ -84,7 +81,6 @@ class SetAudioTrackMessage {
 
   Object encode() {
     return <Object?>[
-      textureId,
       groupId,
       trackId,
     ];
@@ -93,9 +89,8 @@ class SetAudioTrackMessage {
   static SetAudioTrackMessage decode(Object result) {
     result as List<Object?>;
     return SetAudioTrackMessage(
-      textureId: result[0]! as int,
-      groupId: result[1]! as int,
-      trackId: result[2]! as int,
+      groupId: result[0]! as int,
+      trackId: result[1]! as int,
     );
   }
 }
@@ -393,7 +388,7 @@ class AVFoundationVideoPlayerApi {
     }
   }
 
-  Future<void> setAudioTrack(SetAudioTrackMessage msg) async {
+  Future<void> setAudioTrack(SetAudioTrackMessage msg, int textureId) async {
     final String __pigeon_channelName = 'dev.flutter.pigeon.video_player_avfoundation.AVFoundationVideoPlayerApi.setAudioTrack$__pigeon_messageChannelSuffix';
     final BasicMessageChannel<Object?> __pigeon_channel = BasicMessageChannel<Object?>(
       __pigeon_channelName,
@@ -401,7 +396,7 @@ class AVFoundationVideoPlayerApi {
       binaryMessenger: __pigeon_binaryMessenger,
     );
     final List<Object?>? __pigeon_replyList =
-        await __pigeon_channel.send(<Object?>[msg]) as List<Object?>?;
+        await __pigeon_channel.send(<Object?>[msg, textureId]) as List<Object?>?;
     if (__pigeon_replyList == null) {
       throw _createConnectionError(__pigeon_channelName);
     } else if (__pigeon_replyList.length > 1) {

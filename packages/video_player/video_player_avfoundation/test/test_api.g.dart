@@ -67,7 +67,7 @@ abstract class TestHostVideoPlayerApi {
 
   void setMixWithOthers(bool mixWithOthers);
 
-  void setAudioTrack(SetAudioTrackMessage msg);
+  void setAudioTrack(SetAudioTrackMessage msg, int textureId);
 
   static void setUp(TestHostVideoPlayerApi? api, {BinaryMessenger? binaryMessenger, String messageChannelSuffix = '',}) {
     messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
@@ -366,8 +366,11 @@ abstract class TestHostVideoPlayerApi {
           final SetAudioTrackMessage? arg_msg = (args[0] as SetAudioTrackMessage?);
           assert(arg_msg != null,
               'Argument for dev.flutter.pigeon.video_player_avfoundation.AVFoundationVideoPlayerApi.setAudioTrack was null, expected non-null SetAudioTrackMessage.');
+          final int? arg_textureId = (args[1] as int?);
+          assert(arg_textureId != null,
+              'Argument for dev.flutter.pigeon.video_player_avfoundation.AVFoundationVideoPlayerApi.setAudioTrack was null, expected non-null int.');
           try {
-            api.setAudioTrack(arg_msg!);
+            api.setAudioTrack(arg_msg!, arg_textureId!);
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);

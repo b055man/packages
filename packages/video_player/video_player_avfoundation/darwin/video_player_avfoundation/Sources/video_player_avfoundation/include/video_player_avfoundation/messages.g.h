@@ -34,10 +34,8 @@ NS_ASSUME_NONNULL_BEGIN
 @interface FVPSetAudioTrackMessage : NSObject
 /// `init` unavailable to enforce nonnull fields, see the `make` class method.
 - (instancetype)init NS_UNAVAILABLE;
-+ (instancetype)makeWithTextureId:(NSInteger )textureId
-    groupId:(NSInteger )groupId
++ (instancetype)makeWithGroupId:(NSInteger )groupId
     trackId:(NSInteger )trackId;
-@property(nonatomic, assign) NSInteger  textureId;
 @property(nonatomic, assign) NSInteger  groupId;
 @property(nonatomic, assign) NSInteger  trackId;
 @end
@@ -59,7 +57,7 @@ NSObject<FlutterMessageCodec> *FVPAVFoundationVideoPlayerApiGetCodec(void);
 - (void)seekTo:(NSInteger)position forPlayer:(NSInteger)textureId completion:(void (^)(FlutterError *_Nullable))completion;
 - (void)pausePlayer:(NSInteger)textureId error:(FlutterError *_Nullable *_Nonnull)error;
 - (void)setMixWithOthers:(BOOL)mixWithOthers error:(FlutterError *_Nullable *_Nonnull)error;
-- (void)setAudioTrack:(FVPSetAudioTrackMessage *)msg error:(FlutterError *_Nullable *_Nonnull)error;
+- (void)setAudioTrack:(FVPSetAudioTrackMessage *)msg forPlayer:(NSInteger)textureId error:(FlutterError *_Nullable *_Nonnull)error;
 @end
 
 extern void SetUpFVPAVFoundationVideoPlayerApi(id<FlutterBinaryMessenger> binaryMessenger, NSObject<FVPAVFoundationVideoPlayerApi> *_Nullable api);

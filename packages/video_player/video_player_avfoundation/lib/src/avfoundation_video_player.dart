@@ -108,11 +108,25 @@ class AVFoundationVideoPlayer extends VideoPlayerPlatform {
       switch (map['event']) {
         case 'initialized':
           print('initalized received: $map');
+          final allTracks = map['tracks'] as Map<dynamic, dynamic>?;
+          print('allTracks received: $allTracks');
+          List<String>? audioTracks;
+          if (allTracks != null) {
+            audioTracks = allTracks.entries
+                .where((entry) {
+                  final value = entry.value as Map<dynamic, dynamic>;
+                  return value['type'] == 'audio';
+                 })
+                .map((entry) => entry.key as String)
+                .toList();
+          }
+          print('audioTracks received: $audioTracks');
           return VideoEvent(
             eventType: VideoEventType.initialized,
             duration: Duration(milliseconds: map['duration'] as int),
             size: Size((map['width'] as num?)?.toDouble() ?? 0.0,
                 (map['height'] as num?)?.toDouble() ?? 0.0),
+                audioTracks: audioTracks
           );
         case 'completed':
           return VideoEvent(
@@ -151,11 +165,11 @@ class AVFoundationVideoPlayer extends VideoPlayerPlatform {
   }
 
   @override
-  Future<void> setAudioTrackMessage(int playerId, int groupId, int trackId) {
+  Future<void> setAudioTrack(int playerId, int groupId, int trackId) {
     print(
         'Setting audio track: playerId=$playerId, groupId=$groupId, trackId=$trackId');
-    return _api.setAudioTrack(SetAudioTrackMessage(
-        textureId: playerId, groupId: groupId, trackId: trackId));
+    return _api.setAudioTrack(
+        SetAudioTrackMessage(groupId: groupId, trackId: trackId), playerId);
   }
 
   EventChannel _eventChannelFor(int textureId) {

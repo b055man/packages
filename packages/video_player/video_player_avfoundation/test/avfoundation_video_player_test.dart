@@ -19,6 +19,7 @@ class _ApiLogger implements TestHostVideoPlayerApi {
   double? volume;
   double? playbackSpeed;
   bool? mixWithOthers;
+  SetAudioTrackMessage? setAudioTrackMessage;
 
   @override
   int create(CreationOptions options) {
@@ -88,6 +89,12 @@ class _ApiLogger implements TestHostVideoPlayerApi {
   void setPlaybackSpeed(double speed, int textureId) {
     log.add('setPlaybackSpeed');
     playbackSpeed = speed;
+    this.textureId = textureId;
+  }
+
+  @override
+  void setAudioTrack(SetAudioTrackMessage msg, int textureId) {
+    setAudioTrackMessage = msg;
     this.textureId = textureId;
   }
 }

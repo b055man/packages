@@ -32,8 +32,7 @@ class MixWithOthersMessage {
 }
 
 class SetAudioTrackMessage {
-  SetAudioTrackMessage(this.textureId, this.groupId, this.trackId);
-  int textureId;
+  SetAudioTrackMessage(this.groupId, this.trackId);
   int groupId;
   int trackId;
 }
@@ -64,6 +63,6 @@ abstract class AVFoundationVideoPlayerApi {
   void pause(int textureId);
   @ObjCSelector('setMixWithOthers:')
   void setMixWithOthers(bool mixWithOthers);
-  @ObjCSelector('setAudioTrack:')
-  void setAudioTrack(SetAudioTrackMessage msg);
+  @ObjCSelector('setAudioTrack:forPlayer:')
+  void setAudioTrack(SetAudioTrackMessage msg, int textureId);
 }

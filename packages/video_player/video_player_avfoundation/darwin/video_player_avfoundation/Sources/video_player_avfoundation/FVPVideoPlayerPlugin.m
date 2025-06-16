@@ -449,7 +449,7 @@ NS_INLINE CGFloat radiansToDegrees(CGFloat radians) {
     }
       
     NSMutableDictionary *tracks = [NSMutableDictionary dictionary];
-    dispatch_async(dispatch_get_main_queue(), ^{
+//    dispatch_async(dispatch_get_main_queue(), ^{
             //AVAsset *asset = self.avPlayer.currentItem.asset;
             NSArray<NSString *> *keysToLoad = @[@"availableMediaCharacteristicsWithMediaSelectionOptions"];
 
@@ -466,13 +466,13 @@ NS_INLINE CGFloat radiansToDegrees(CGFloat radians) {
                 }
 
                 // Use a Dispatch Group to wait for all media groups to be loaded
-                dispatch_group_t group = dispatch_group_create();
+//                dispatch_group_t group = dispatch_group_create();
 
                 // Reset mediaGroups before populating
                 self.mediaGroups = [NSMutableArray array];
 
                 for (AVMediaCharacteristic characteristic in asset.availableMediaCharacteristicsWithMediaSelectionOptions) {
-                    dispatch_group_enter(group);
+//                    dispatch_group_enter(group);
                     [asset loadMediaSelectionGroupForMediaCharacteristic:characteristic completionHandler:^(AVMediaSelectionGroup * _Nullable loadedGroup, NSError * _Nullable loadError) {
                         if (loadedGroup && !loadError) {
                             // Using @synchronized to ensure thread-safe modification of shared resources
@@ -506,7 +506,7 @@ NS_INLINE CGFloat radiansToDegrees(CGFloat radians) {
                                 }
                             }
                         }
-                        dispatch_group_leave(group);
+//                        dispatch_group_leave(group);
                     }];
                 }
 
@@ -528,7 +528,7 @@ NS_INLINE CGFloat radiansToDegrees(CGFloat radians) {
                 //     }
                 // });
             }];
-    });
+//    });
     
     _isInitialized = YES;
     _eventSink(@{
@@ -625,6 +625,33 @@ NS_INLINE CGFloat radiansToDegrees(CGFloat radians) {
   }
 
   _player.rate = speed;
+}
+
+- (void)setAudioTrack:(int)groupId trackIndex:(int)trackId{
+    if (groupId >= self.mediaGroups.count) {
+            NSLog(@"Error: groupId %ld is out of bounds.", (long)groupId);
+            return;
+        }
+
+        AVMediaSelectionGroup *group = self.mediaGroups[groupId];
+        if (trackId >= group.options.count) {
+            NSLog(@"Error: trackId %ld is out of bounds for the selected group.", (long)trackId);
+            return;
+        }
+
+        AVMediaSelectionOption *option = group.options[trackId];
+
+        [_player.currentItem selectMediaOption:option inMediaSelectionGroup:group];
+//        else {
+//            // To "disable" a track, revert its group to automatic selection,
+//            // but only if it's the one currently selected.
+//            AVMediaSelectionOption *currentlySelectedOption =
+//                [self.avPlayer.currentItem.currentMediaSelection selectedMediaOptionInMediaSelectionGroup:group];
+//            
+//            if (currentlySelectedOption == option) {
+//                [self.avPlayer.currentItem selectMediaOptionAutomaticallyInMediaSelectionGroup:group];
+//            }
+//        }
 }
 
 - (CVPixelBufferRef)copyPixelBuffer {
@@ -911,6 +938,12 @@ NS_INLINE CGFloat radiansToDegrees(CGFloat radians) {
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
   }
 #endif
+}
+
+- (void)setAudioTrack:(nonnull FVPSetAudioTrackMessage *)msg forPlayer:(NSInteger)textureId error:(FlutterError **)error {
+   FVPVideoPlayer *player = self.playersByTextureId[@(textureId)];
+    [player setAudioTrack:msg.groupId trackIndex:msg.trackId];
+    
 }
 
 @end
