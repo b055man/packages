@@ -34,6 +34,7 @@ final class VideoPlayer {
     private ExoPlayer exoPlayer;
     private Surface surface;
 
+
     @VisibleForTesting
     VideoPlayer(
             ExoPlayer.Builder builder,
@@ -137,6 +138,7 @@ final class VideoPlayer {
         List<Tracks.Group> groups = currentTracks.getGroups();
         if (audioTrack.groupId > groups.size()) {
             Log.i("VideoPlayer", "GroupId larger than allowed size - groupId " + audioTrack.groupId + ", size:" + groups.size());
+            return;
         }
 
         Tracks.Group group = groups.get(audioTrack.groupId);
