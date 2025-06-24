@@ -402,103 +402,6 @@ public class Messages {
   }
 
   /** Generated class from Pigeon that represents data sent in messages. */
-  public static final class SetAudioTrackMessage {
-    private @NonNull Long textureId;
-
-    public @NonNull Long getTextureId() {
-      return textureId;
-    }
-
-    public void setTextureId(@NonNull Long setterArg) {
-      if (setterArg == null) {
-        throw new IllegalStateException("Nonnull field \"textureId\" is null.");
-      }
-      this.textureId = setterArg;
-    }
-
-    private @NonNull Long groupId;
-
-    public @NonNull Long getGroupId() {
-      return groupId;
-    }
-
-    public void setGroupId(@NonNull Long setterArg) {
-      if (setterArg == null) {
-        throw new IllegalStateException("Nonnull field \"groupId\" is null.");
-      }
-      this.groupId = setterArg;
-    }
-
-    private @NonNull Long trackId;
-
-    public @NonNull Long getTrackId() {
-      return trackId;
-    }
-
-    public void setTrackId(@NonNull Long setterArg) {
-      if (setterArg == null) {
-        throw new IllegalStateException("Nonnull field \"trackId\" is null.");
-      }
-      this.trackId = setterArg;
-    }
-
-    /** Constructor is non-public to enforce null safety; use Builder. */
-    SetAudioTrackMessage() {}
-
-    public static final class Builder {
-
-      private @Nullable Long textureId;
-
-      public @NonNull Builder setTextureId(@NonNull Long setterArg) {
-        this.textureId = setterArg;
-        return this;
-      }
-
-      private @Nullable Long groupId;
-
-      public @NonNull Builder setGroupId(@NonNull Long setterArg) {
-        this.groupId = setterArg;
-        return this;
-      }
-
-      private @Nullable Long trackId;
-
-      public @NonNull Builder setTrackId(@NonNull Long setterArg) {
-        this.trackId = setterArg;
-        return this;
-      }
-
-      public @NonNull SetAudioTrackMessage build() {
-        SetAudioTrackMessage pigeonReturn = new SetAudioTrackMessage();
-        pigeonReturn.setTextureId(textureId);
-        pigeonReturn.setGroupId(groupId);
-        pigeonReturn.setTrackId(trackId);
-        return pigeonReturn;
-      }
-    }
-
-    @NonNull
-    ArrayList<Object> toList() {
-      ArrayList<Object> toListResult = new ArrayList<Object>(3);
-      toListResult.add(textureId);
-      toListResult.add(groupId);
-      toListResult.add(trackId);
-      return toListResult;
-    }
-
-    static @NonNull SetAudioTrackMessage fromList(@NonNull ArrayList<Object> list) {
-      SetAudioTrackMessage pigeonResult = new SetAudioTrackMessage();
-      Object textureId = list.get(0);
-      pigeonResult.setTextureId((textureId == null) ? null : ((textureId instanceof Integer) ? (Integer) textureId : (Long) textureId));
-      Object groupId = list.get(1);
-      pigeonResult.setGroupId((groupId == null) ? null : ((groupId instanceof Integer) ? (Integer) groupId : (Long) groupId));
-      Object trackId = list.get(2);
-      pigeonResult.setTrackId((trackId == null) ? null : ((trackId instanceof Integer) ? (Integer) trackId : (Long) trackId));
-      return pigeonResult;
-    }
-  }
-
-  /** Generated class from Pigeon that represents data sent in messages. */
   public static final class CreateMessage {
     private @Nullable String asset;
 
@@ -680,6 +583,103 @@ public class Messages {
     }
   }
 
+  /** Generated class from Pigeon that represents data sent in messages. */
+  public static final class AudioTrackMessage {
+    private @NonNull Long textureId;
+
+    public @NonNull Long getTextureId() {
+      return textureId;
+    }
+
+    public void setTextureId(@NonNull Long setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"textureId\" is null.");
+      }
+      this.textureId = setterArg;
+    }
+
+    private @NonNull Long groupId;
+
+    public @NonNull Long getGroupId() {
+      return groupId;
+    }
+
+    public void setGroupId(@NonNull Long setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"groupId\" is null.");
+      }
+      this.groupId = setterArg;
+    }
+
+    private @NonNull Long trackId;
+
+    public @NonNull Long getTrackId() {
+      return trackId;
+    }
+
+    public void setTrackId(@NonNull Long setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"trackId\" is null.");
+      }
+      this.trackId = setterArg;
+    }
+
+    /** Constructor is non-public to enforce null safety; use Builder. */
+    AudioTrackMessage() {}
+
+    public static final class Builder {
+
+      private @Nullable Long textureId;
+
+      public @NonNull Builder setTextureId(@NonNull Long setterArg) {
+        this.textureId = setterArg;
+        return this;
+      }
+
+      private @Nullable Long groupId;
+
+      public @NonNull Builder setGroupId(@NonNull Long setterArg) {
+        this.groupId = setterArg;
+        return this;
+      }
+
+      private @Nullable Long trackId;
+
+      public @NonNull Builder setTrackId(@NonNull Long setterArg) {
+        this.trackId = setterArg;
+        return this;
+      }
+
+      public @NonNull AudioTrackMessage build() {
+        AudioTrackMessage pigeonReturn = new AudioTrackMessage();
+        pigeonReturn.setTextureId(textureId);
+        pigeonReturn.setGroupId(groupId);
+        pigeonReturn.setTrackId(trackId);
+        return pigeonReturn;
+      }
+    }
+
+    @NonNull
+    ArrayList<Object> toList() {
+      ArrayList<Object> toListResult = new ArrayList<Object>(3);
+      toListResult.add(textureId);
+      toListResult.add(groupId);
+      toListResult.add(trackId);
+      return toListResult;
+    }
+
+    static @NonNull AudioTrackMessage fromList(@NonNull ArrayList<Object> list) {
+      AudioTrackMessage pigeonResult = new AudioTrackMessage();
+      Object textureId = list.get(0);
+      pigeonResult.setTextureId((textureId == null) ? null : ((textureId instanceof Integer) ? (Integer) textureId : (Long) textureId));
+      Object groupId = list.get(1);
+      pigeonResult.setGroupId((groupId == null) ? null : ((groupId instanceof Integer) ? (Integer) groupId : (Long) groupId));
+      Object trackId = list.get(2);
+      pigeonResult.setTrackId((trackId == null) ? null : ((trackId instanceof Integer) ? (Integer) trackId : (Long) trackId));
+      return pigeonResult;
+    }
+  }
+
   private static class AndroidVideoPlayerApiCodec extends StandardMessageCodec {
     public static final AndroidVideoPlayerApiCodec INSTANCE = new AndroidVideoPlayerApiCodec();
 
@@ -689,17 +689,17 @@ public class Messages {
     protected Object readValueOfType(byte type, @NonNull ByteBuffer buffer) {
       switch (type) {
         case (byte) 128:
-          return CreateMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return AudioTrackMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 129:
-          return LoopingMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return CreateMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 130:
-          return MixWithOthersMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return LoopingMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 131:
-          return PlaybackSpeedMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return MixWithOthersMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 132:
-          return PositionMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return PlaybackSpeedMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 133:
-          return SetAudioTrackMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return PositionMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 134:
           return TextureMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 135:
@@ -711,24 +711,24 @@ public class Messages {
 
     @Override
     protected void writeValue(@NonNull ByteArrayOutputStream stream, Object value) {
-      if (value instanceof CreateMessage) {
+      if (value instanceof AudioTrackMessage) {
         stream.write(128);
+        writeValue(stream, ((AudioTrackMessage) value).toList());
+      } else if (value instanceof CreateMessage) {
+        stream.write(129);
         writeValue(stream, ((CreateMessage) value).toList());
       } else if (value instanceof LoopingMessage) {
-        stream.write(129);
+        stream.write(130);
         writeValue(stream, ((LoopingMessage) value).toList());
       } else if (value instanceof MixWithOthersMessage) {
-        stream.write(130);
+        stream.write(131);
         writeValue(stream, ((MixWithOthersMessage) value).toList());
       } else if (value instanceof PlaybackSpeedMessage) {
-        stream.write(131);
+        stream.write(132);
         writeValue(stream, ((PlaybackSpeedMessage) value).toList());
       } else if (value instanceof PositionMessage) {
-        stream.write(132);
-        writeValue(stream, ((PositionMessage) value).toList());
-      } else if (value instanceof SetAudioTrackMessage) {
         stream.write(133);
-        writeValue(stream, ((SetAudioTrackMessage) value).toList());
+        writeValue(stream, ((PositionMessage) value).toList());
       } else if (value instanceof TextureMessage) {
         stream.write(134);
         writeValue(stream, ((TextureMessage) value).toList());
@@ -768,7 +768,7 @@ public class Messages {
 
     void setMixWithOthers(@NonNull MixWithOthersMessage msg);
 
-    void setAudioTrack(@NonNull SetAudioTrackMessage msg);
+    void changeAudioTrack(@NonNull AudioTrackMessage msg);
 
     /** The codec used by AndroidVideoPlayerApi. */
     static @NonNull MessageCodec<Object> getCodec() {
@@ -1041,15 +1041,15 @@ public class Messages {
       {
         BasicMessageChannel<Object> channel =
             new BasicMessageChannel<>(
-                binaryMessenger, "dev.flutter.pigeon.AndroidVideoPlayerApi.setAudioTrack", getCodec());
+                binaryMessenger, "dev.flutter.pigeon.AndroidVideoPlayerApi.changeAudioTrack", getCodec());
         if (api != null) {
           channel.setMessageHandler(
               (message, reply) -> {
                 ArrayList<Object> wrapped = new ArrayList<Object>();
                 ArrayList<Object> args = (ArrayList<Object>) message;
-                SetAudioTrackMessage msgArg = (SetAudioTrackMessage) args.get(0);
+                AudioTrackMessage msgArg = (AudioTrackMessage) args.get(0);
                 try {
-                  api.setAudioTrack(msgArg);
+                  api.changeAudioTrack(msgArg);
                   wrapped.add(0, null);
                 }
  catch (Throwable exception) {

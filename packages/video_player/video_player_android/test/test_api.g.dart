@@ -17,22 +17,22 @@ class _TestHostVideoPlayerApiCodec extends StandardMessageCodec {
   const _TestHostVideoPlayerApiCodec();
   @override
   void writeValue(WriteBuffer buffer, Object? value) {
-    if (value is CreateMessage) {
+    if (value is AudioTrackMessage) {
       buffer.putUint8(128);
       writeValue(buffer, value.encode());
-    } else if (value is LoopingMessage) {
+    } else if (value is CreateMessage) {
       buffer.putUint8(129);
       writeValue(buffer, value.encode());
-    } else if (value is MixWithOthersMessage) {
+    } else if (value is LoopingMessage) {
       buffer.putUint8(130);
       writeValue(buffer, value.encode());
-    } else if (value is PlaybackSpeedMessage) {
+    } else if (value is MixWithOthersMessage) {
       buffer.putUint8(131);
       writeValue(buffer, value.encode());
-    } else if (value is PositionMessage) {
+    } else if (value is PlaybackSpeedMessage) {
       buffer.putUint8(132);
       writeValue(buffer, value.encode());
-    } else if (value is SetAudioTrackMessage) {
+    } else if (value is PositionMessage) {
       buffer.putUint8(133);
       writeValue(buffer, value.encode());
     } else if (value is TextureMessage) {
@@ -50,17 +50,17 @@ class _TestHostVideoPlayerApiCodec extends StandardMessageCodec {
   Object? readValueOfType(int type, ReadBuffer buffer) {
     switch (type) {
       case 128: 
-        return CreateMessage.decode(readValue(buffer)!);
+        return AudioTrackMessage.decode(readValue(buffer)!);
       case 129: 
-        return LoopingMessage.decode(readValue(buffer)!);
+        return CreateMessage.decode(readValue(buffer)!);
       case 130: 
-        return MixWithOthersMessage.decode(readValue(buffer)!);
+        return LoopingMessage.decode(readValue(buffer)!);
       case 131: 
-        return PlaybackSpeedMessage.decode(readValue(buffer)!);
+        return MixWithOthersMessage.decode(readValue(buffer)!);
       case 132: 
-        return PositionMessage.decode(readValue(buffer)!);
+        return PlaybackSpeedMessage.decode(readValue(buffer)!);
       case 133: 
-        return SetAudioTrackMessage.decode(readValue(buffer)!);
+        return PositionMessage.decode(readValue(buffer)!);
       case 134: 
         return TextureMessage.decode(readValue(buffer)!);
       case 135: 
@@ -97,7 +97,7 @@ abstract class TestHostVideoPlayerApi {
 
   void setMixWithOthers(MixWithOthersMessage msg);
 
-  void setAudioTrack(SetAudioTrackMessage msg);
+  void changeAudioTrack(AudioTrackMessage msg);
 
   static void setup(TestHostVideoPlayerApi? api, {BinaryMessenger? binaryMessenger}) {
     {
@@ -306,19 +306,19 @@ abstract class TestHostVideoPlayerApi {
     }
     {
       final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-          'dev.flutter.pigeon.AndroidVideoPlayerApi.setAudioTrack', codec,
+          'dev.flutter.pigeon.AndroidVideoPlayerApi.changeAudioTrack', codec,
           binaryMessenger: binaryMessenger);
       if (api == null) {
         _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(channel, null);
       } else {
         _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(channel, (Object? message) async {
           assert(message != null,
-          'Argument for dev.flutter.pigeon.AndroidVideoPlayerApi.setAudioTrack was null.');
+          'Argument for dev.flutter.pigeon.AndroidVideoPlayerApi.changeAudioTrack was null.');
           final List<Object?> args = (message as List<Object?>?)!;
-          final SetAudioTrackMessage? arg_msg = (args[0] as SetAudioTrackMessage?);
+          final AudioTrackMessage? arg_msg = (args[0] as AudioTrackMessage?);
           assert(arg_msg != null,
-              'Argument for dev.flutter.pigeon.AndroidVideoPlayerApi.setAudioTrack was null, expected non-null SetAudioTrackMessage.');
-          api.setAudioTrack(arg_msg!);
+              'Argument for dev.flutter.pigeon.AndroidVideoPlayerApi.changeAudioTrack was null, expected non-null AudioTrackMessage.');
+          api.changeAudioTrack(arg_msg!);
           return <Object?>[];
         });
       }

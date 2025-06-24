@@ -42,13 +42,6 @@ class PositionMessage {
   int position;
 }
 
-class SetAudioTrackMessage {
-  SetAudioTrackMessage(this.textureId, this.groupId, this.trackId);
-  int textureId;
-  int groupId;
-  int trackId;
-}
-
 class CreateMessage {
   CreateMessage({required this.httpHeaders});
   String? asset;
@@ -61,6 +54,13 @@ class CreateMessage {
 class MixWithOthersMessage {
   MixWithOthersMessage(this.mixWithOthers);
   bool mixWithOthers;
+}
+
+class AudioTrackMessage {
+  AudioTrackMessage(this.textureId, this.groupId, this.trackId);
+  int textureId;
+  int groupId;
+  int trackId;
 }
 
 @HostApi(dartHostTestHandler: 'TestHostVideoPlayerApi')
@@ -76,5 +76,5 @@ abstract class AndroidVideoPlayerApi {
   void seekTo(PositionMessage msg);
   void pause(TextureMessage msg);
   void setMixWithOthers(MixWithOthersMessage msg);
-  void setAudioTrack(SetAudioTrackMessage msg);
+  void changeAudioTrack(AudioTrackMessage msg);
 }

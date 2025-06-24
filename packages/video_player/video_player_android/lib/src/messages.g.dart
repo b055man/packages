@@ -136,37 +136,6 @@ class PositionMessage {
   }
 }
 
-class SetAudioTrackMessage {
-  SetAudioTrackMessage({
-    required this.textureId,
-    required this.groupId,
-    required this.trackId,
-  });
-
-  int textureId;
-
-  int groupId;
-
-  int trackId;
-
-  Object encode() {
-    return <Object?>[
-      textureId,
-      groupId,
-      trackId,
-    ];
-  }
-
-  static SetAudioTrackMessage decode(Object result) {
-    result as List<Object?>;
-    return SetAudioTrackMessage(
-      textureId: result[0]! as int,
-      groupId: result[1]! as int,
-      trackId: result[2]! as int,
-    );
-  }
-}
-
 class CreateMessage {
   CreateMessage({
     this.asset,
@@ -229,26 +198,57 @@ class MixWithOthersMessage {
   }
 }
 
+class AudioTrackMessage {
+  AudioTrackMessage({
+    required this.textureId,
+    required this.groupId,
+    required this.trackId,
+  });
+
+  int textureId;
+
+  int groupId;
+
+  int trackId;
+
+  Object encode() {
+    return <Object?>[
+      textureId,
+      groupId,
+      trackId,
+    ];
+  }
+
+  static AudioTrackMessage decode(Object result) {
+    result as List<Object?>;
+    return AudioTrackMessage(
+      textureId: result[0]! as int,
+      groupId: result[1]! as int,
+      trackId: result[2]! as int,
+    );
+  }
+}
+
 class _AndroidVideoPlayerApiCodec extends StandardMessageCodec {
   const _AndroidVideoPlayerApiCodec();
   @override
   void writeValue(WriteBuffer buffer, Object? value) {
-    if (value is CreateMessage) {
+    if (value is AudioTrackMessage) {
       buffer.putUint8(128);
       writeValue(buffer, value.encode());
-    } else if (value is LoopingMessage) {
+    } else if (value is CreateMessage) {
       buffer.putUint8(129);
       writeValue(buffer, value.encode());
-    } else if (value is MixWithOthersMessage) {
+    } else if (value is LoopingMessage) {
       buffer.putUint8(130);
       writeValue(buffer, value.encode());
-    } else if (value is PlaybackSpeedMessage) {
+    } else if (value is MixWithOthersMessage) {
       buffer.putUint8(131);
       writeValue(buffer, value.encode());
-    } else if (value is PositionMessage) {
+    } else if (value is PlaybackSpeedMessage) {
       buffer.putUint8(132);
       writeValue(buffer, value.encode());
-    } else if (value is SetAudioTrackMessage) {
+    } else if (value is PositionMessage) {
       buffer.putUint8(133);
       writeValue(buffer, value.encode());
     } else if (value is TextureMessage) {
@@ -266,17 +266,17 @@ class _AndroidVideoPlayerApiCodec extends StandardMessageCodec {
   Object? readValueOfType(int type, ReadBuffer buffer) {
     switch (type) {
       case 128: 
-        return CreateMessage.decode(readValue(buffer)!);
+        return AudioTrackMessage.decode(readValue(buffer)!);
       case 129: 
-        return LoopingMessage.decode(readValue(buffer)!);
+        return CreateMessage.decode(readValue(buffer)!);
       case 130: 
-        return MixWithOthersMessage.decode(readValue(buffer)!);
+        return LoopingMessage.decode(readValue(buffer)!);
       case 131: 
-        return PlaybackSpeedMessage.decode(readValue(buffer)!);
+        return MixWithOthersMessage.decode(readValue(buffer)!);
       case 132: 
-        return PositionMessage.decode(readValue(buffer)!);
+        return PlaybackSpeedMessage.decode(readValue(buffer)!);
       case 133: 
-        return SetAudioTrackMessage.decode(readValue(buffer)!);
+        return PositionMessage.decode(readValue(buffer)!);
       case 134: 
         return TextureMessage.decode(readValue(buffer)!);
       case 135: 
@@ -549,9 +549,9 @@ class AndroidVideoPlayerApi {
     }
   }
 
-  Future<void> setAudioTrack(SetAudioTrackMessage arg_msg) async {
+  Future<void> changeAudioTrack(AudioTrackMessage arg_msg) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.AndroidVideoPlayerApi.setAudioTrack', codec,
+        'dev.flutter.pigeon.AndroidVideoPlayerApi.changeAudioTrack', codec,
         binaryMessenger: _binaryMessenger);
     final List<Object?>? replyList =
         await channel.send(<Object?>[arg_msg]) as List<Object?>?;

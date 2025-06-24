@@ -11,7 +11,9 @@ import androidx.media3.common.Format;
 import androidx.media3.common.PlaybackException;
 import androidx.media3.common.Player;
 import androidx.media3.common.TrackGroup;
+import androidx.media3.common.Tracks;
 import androidx.media3.common.VideoSize;
+import androidx.media3.common.util.Log;
 import androidx.media3.common.util.UnstableApi;
 import androidx.media3.exoplayer.ExoPlayer;
 
@@ -19,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 final class ExoPlayerEventListener implements Player.Listener {
   private final ExoPlayer exoPlayer;
@@ -41,6 +44,28 @@ final class ExoPlayerEventListener implements Player.Listener {
     } else {
       events.onBufferingEnd();
     }
+  }
+
+  @OptIn(markerClass = UnstableApi.class) private List<AudioTrack> getAudioTracks() {
+    List<AudioTrack> audioTracks = new ArrayList<>();
+
+    List<Tracks.Group> currentTracksGroups = exoPlayer.getCurrentTracks().getGroups();
+    for (int i = 0; i < currentTracksGroups.size(); i++) {
+      TrackGroup trackGroup = currentTracksGroups.get(i).getMediaTrackGroup();
+
+      Log.i("ExoPlayerEventListener", "Processing track group nr: " + i + " of type: " + trackGroup.type);
+      if (trackGroup.type == C.TRACK_TYPE_AUDIO) {
+        for (int j = 0; j < trackGroup.length; j++) {
+          Format format = trackGroup.getFormat(j);
+
+          AudioTrack audioTrack = new AudioTrack(i,j, format.language, format.label);
+          audioTracks.add(audioTrack);
+          Log.i("ExoPlayerEventListener", "AudioTrack added: " + audioTrack);
+        }
+      }
+    }
+
+    return audioTracks;
   }
 
   @OptIn(markerClass = UnstableApi.class) @SuppressWarnings("SuspiciousNameCombination")
@@ -69,25 +94,13 @@ final class ExoPlayerEventListener implements Player.Listener {
       }
     }
 
-    List<Map<String, Object>> audioTracks = new ArrayList<>();
-    for (int i = 0; i < exoPlayer.getCurrentTracks().getGroups().size(); i++) {
-      TrackGroup trackGroup = exoPlayer.getCurrentTracks().getGroups().get(i).getMediaTrackGroup();
-      System.err.println("iterating through track " + i + ", type: " + trackGroup.type);
-      if (trackGroup.type == C.TRACK_TYPE_AUDIO) {
-        for (int j = 0; j < trackGroup.length; j++) {
-          Format format = trackGroup.getFormat(j);
-          Map<String, Object> trackInfo = new HashMap<>();
-          trackInfo.put("group", i);
-          trackInfo.put("index", j);
-          trackInfo.put("language", format.language);
-          trackInfo.put("label", format.label);
-          trackInfo.put("combined", i + "." + j + "." + format.language + "." + format.label);
-          audioTracks.add(trackInfo);
-        }
-      }
+    List<AudioTrack> audioTracks = getAudioTracks();
+    List<Map<String, Object>> audioTracksAsMap = new ArrayList<>();
+    for(AudioTrack audioTrack : audioTracks){
+      audioTracksAsMap.add(audioTrack.asMap());
     }
 
-    events.onInitialized(width, height, exoPlayer.getDuration(), rotationCorrection, audioTracks);
+    events.onInitialized(width, height, exoPlayer.getDuration(), rotationCorrection, audioTracksAsMap);
   }
 
   @Override

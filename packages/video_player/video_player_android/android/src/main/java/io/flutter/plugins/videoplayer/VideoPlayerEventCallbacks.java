@@ -53,11 +53,8 @@ final class VideoPlayerEventCallbacks implements VideoPlayerCallbacks {
     event.put("width", width);
     event.put("height", height);
     event.put("duration", durationInMs);
-    List<String> combinedAudioTracks = new ArrayList<>();
-    for (int i = 0;  i < audioTracks.size(); i++) {
-      combinedAudioTracks.add((String) audioTracks.get(i).get("combined"));
-    }
-    event.put("audioTracks", combinedAudioTracks);
+    event.put("audioTracks", audioTracks);
+
     if (rotationCorrectionInDegrees != 0) {
       event.put("rotationCorrection", rotationCorrectionInDegrees);
     }

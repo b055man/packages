@@ -115,8 +115,8 @@ class AndroidVideoPlayer extends VideoPlayerPlatform {
   }
 
   @override
-  Future<void> setAudioTrack(int textureId, int groupId, int trackId) {
-    return _api.setAudioTrack(SetAudioTrackMessage(
+  Future<void> changeAudioTrack(int textureId, int groupId, int trackId) {
+    return _api.changeAudioTrack(AudioTrackMessage(
       textureId: textureId,
       groupId: groupId,
       trackId: trackId,
@@ -131,24 +131,46 @@ class AndroidVideoPlayer extends VideoPlayerPlatform {
       final Map<dynamic, dynamic> map = event as Map<dynamic, dynamic>;
       switch (map['event']) {
         case 'initialized':
-          print("audioTracks received: ${map['audioTracks']}");
-          final rawAudioTracks = (map['audioTracks'] as List<Object?>)
-              .map(
-                (e) => e.toString(),
-              )
-              .toList();
-          print("rawAudioTracks received: $rawAudioTracks");
-          // final audioTracks = rawAudioTracks
-          //     ?.map((track as Map<String, Object>) =>
-          //         "${track['group']}.${track['index']}")
-          //     .toList();
+          final List<AudioTrack> audioTracks = <AudioTrack>[];
+          try {
+            for (final Object? track in map['audioTracks'] as List<Object?>) {
+              if (track == null) {
+                continue;
+              }
+
+              if (track is! Map) {
+                continue;
+              }
+
+              final Map<String, Object?> trackAsMap =
+                  track.cast<String, Object?>();
+              final int? groupId = trackAsMap['groupId'] as int?;
+              final int? trackId = trackAsMap['trackId'] as int?;
+              final String? label = trackAsMap['label'] as String?;
+              final String? language = trackAsMap['language'] as String?;
+
+              if (groupId == null || trackId == null) {
+                continue;
+              }
+
+              audioTracks.add(AudioTrack(
+                groupId: groupId,
+                trackId: trackId,
+                label: label,
+                language: language,
+              ));
+            }
+          } catch (e) {
+            // ignore - failing parsing audio tracks should not crash the player
+          }
+
           return VideoEvent(
             eventType: VideoEventType.initialized,
             duration: Duration(milliseconds: map['duration'] as int),
             size: Size((map['width'] as num?)?.toDouble() ?? 0.0,
                 (map['height'] as num?)?.toDouble() ?? 0.0),
             rotationCorrection: map['rotationCorrection'] as int? ?? 0,
-            audioTracks: rawAudioTracks,
+            audioTracks: audioTracks,
           );
         case 'completed':
           return VideoEvent(
