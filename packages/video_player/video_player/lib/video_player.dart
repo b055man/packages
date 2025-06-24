@@ -210,7 +210,7 @@ class VideoPlayerValue {
         'volume: $volume, '
         'playbackSpeed: $playbackSpeed, '
         'errorDescription: $errorDescription, '
-        'isCompleted: $isCompleted), ';
+        'isCompleted: $isCompleted),';
   }
 
   @override
