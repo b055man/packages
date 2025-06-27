@@ -148,6 +148,7 @@ class AndroidVideoPlayer extends VideoPlayerPlatform {
               final int? trackId = trackAsMap['trackId'] as int?;
               final String? label = trackAsMap['label'] as String?;
               final String? language = trackAsMap['language'] as String?;
+              final bool? isCurrent = trackAsMap['isCurrent'] as bool?;
 
               if (groupId == null || trackId == null) {
                 continue;
@@ -158,6 +159,7 @@ class AndroidVideoPlayer extends VideoPlayerPlatform {
                 trackId: trackId,
                 label: label,
                 language: language,
+                isCurrent: isCurrent ?? false,
               ));
             }
           } catch (e) {
@@ -172,6 +174,36 @@ class AndroidVideoPlayer extends VideoPlayerPlatform {
             rotationCorrection: map['rotationCorrection'] as int? ?? 0,
             audioTracks: audioTracks,
           );
+        case 'audioTracksChanged':
+          final List<AudioTrack> audioTracks = <AudioTrack>[];
+          try {
+              for (final Object? track in map['audioTracks'] as List<Object?>) {
+                if (track == null) {
+                  continue;
+                }
+
+                if (track is! Map) {
+                  continue;
+                }
+
+                final Map<String, Object?> trackAsMap =
+                    track.cast<String, Object?>();
+                final int? groupId = trackAsMap['groupId'] as int?;
+                final int? trackId = trackAsMap['trackId'] as int?;
+                final String? label = trackAsMap['label'] as String?;
+                final String? language = trackAsMap['language'] as String?;
+                final bool? isCurrent = trackAsMap['isCurrent'] as bool?;
+
+                if (groupId == null || trackId == null) {
+                  continue;
+                }
+              }
+            }
+
+              // audioTracks.add(AudioTrack(
+              //   groupId: groupId,
+              //   trackId: trackId,
+              //   label: label,);
         case 'completed':
           return VideoEvent(
             eventType: VideoEventType.completed,
