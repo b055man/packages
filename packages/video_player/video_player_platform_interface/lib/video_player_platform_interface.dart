@@ -171,7 +171,7 @@ class DataSource {
 }
 
 /// Entity representing an audio track of a video.
-/// Holds the group id, track id, language and label of the audio track.
+/// Holds the group id, track id, language, label, and if it is currently selected
 @immutable
 class AudioTrack {
   /// Creates a new [AudioTrack].
@@ -180,6 +180,7 @@ class AudioTrack {
     required this.trackId,
     this.language,
     this.label,
+    this.isCurrent = false,
   });
 
   /// The group id of the audio track.
@@ -194,13 +195,17 @@ class AudioTrack {
   /// The label of the audio track, if available.
   final String? label;
 
+  /// Whether this audio track is currently selected.
+  final bool isCurrent;
+
   @override
   String toString() {
     return '${objectRuntimeType(this, 'AudioTrack')}('
         'groupId: $groupId, '
         'trackId: $trackId, '
         'language: $language, '
-        'label: $label)';
+        'label: $label, '
+        'isCurrent: $isCurrent)';
   }
 
   @override
@@ -211,7 +216,8 @@ class AudioTrack {
           groupId == other.groupId &&
           trackId == other.trackId &&
           language == other.language &&
-          label == other.label;
+          label == other.label &&
+          isCurrent == other.isCurrent;
 
   @override
   int get hashCode => Object.hash(
@@ -219,6 +225,7 @@ class AudioTrack {
         trackId,
         language,
         label,
+        isCurrent,
       );
 }
 

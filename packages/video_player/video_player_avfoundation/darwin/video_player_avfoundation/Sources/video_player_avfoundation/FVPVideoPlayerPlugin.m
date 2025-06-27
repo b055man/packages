@@ -500,11 +500,13 @@ NS_INLINE CGFloat radiansToDegrees(CGFloat radians) {
       if (option.isPlayable && [option.mediaType isEqualToString:AVMediaTypeAudio]) {
         NSString *label = [self findTitleFromMetadata:option.commonMetadata];
         NSString *language = option.locale.localeIdentifier;
+        BOOL isCurrent = [option isEqual:group.selectedOption];
 
         AudioTrack *track = [[AudioTrack alloc] initWithGroupId:(int)groupIndex
                                                         trackId:(int)optionIndex
                                                        language:language
-                                                          label:label];
+                                                          label:label
+                                                        isCurrent:isCurrent];
 
         NSLog(@"AudioTrack added: %@", track);
         [audioTracks addObject:track];

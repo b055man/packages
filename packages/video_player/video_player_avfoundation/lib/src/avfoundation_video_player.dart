@@ -133,6 +133,7 @@ class AVFoundationVideoPlayer extends VideoPlayerPlatform {
               final int? trackId = trackAsMap['trackId'] as int?;
               final String? label = trackAsMap['label'] as String?;
               final String? language = trackAsMap['language'] as String?;
+              final bool? isCurrent = trackAsMap['isCurrent'] as bool?;
 
               if (groupId == null || trackId == null) {
                 continue;
@@ -143,6 +144,7 @@ class AVFoundationVideoPlayer extends VideoPlayerPlatform {
                 trackId: trackId,
                 label: label,
                 language: language,
+                isCurrent: isCurrent ?? false,
               ));
             }
           } catch (e) {

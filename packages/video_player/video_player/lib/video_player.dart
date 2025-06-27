@@ -60,7 +60,6 @@ class VideoPlayerValue {
     this.rotationCorrection = 0,
     this.errorDescription,
     this.isCompleted = false,
-    this.currentAudioTrack,
     this.audioTracks = const <AudioTrack>[],
   });
 
@@ -136,9 +135,6 @@ class VideoPlayerValue {
   /// Indicates whether or not the video has been loaded and is ready to play.
   final bool isInitialized;
 
-  /// The currently selected audio track.
-  final AudioTrack? currentAudioTrack;
-
   /// The list of available audio tracks.
   final List<AudioTrack> audioTracks;
 
@@ -181,7 +177,6 @@ class VideoPlayerValue {
     int? rotationCorrection,
     String? errorDescription = _defaultErrorDescription,
     bool? isCompleted,
-    AudioTrack? currentAudioTrack,
     List<AudioTrack>? audioTracks,
   }) {
     return VideoPlayerValue(
@@ -202,7 +197,6 @@ class VideoPlayerValue {
           ? errorDescription
           : this.errorDescription,
       isCompleted: isCompleted ?? this.isCompleted,
-      currentAudioTrack: currentAudioTrack ?? this.currentAudioTrack,
       audioTracks: audioTracks ?? this.audioTracks,
     );
   }
@@ -224,7 +218,6 @@ class VideoPlayerValue {
         'playbackSpeed: $playbackSpeed, '
         'errorDescription: $errorDescription, '
         'isCompleted: $isCompleted), '
-        'currentAudioTrack: $currentAudioTrack, '
         'audioTracks: $audioTracks, ';
   }
 
@@ -248,7 +241,6 @@ class VideoPlayerValue {
           rotationCorrection == other.rotationCorrection &&
           isInitialized == other.isInitialized &&
           isCompleted == other.isCompleted &&
-          currentAudioTrack == other.currentAudioTrack &&
           audioTracks == other.audioTracks;
 
   @override
@@ -268,7 +260,6 @@ class VideoPlayerValue {
         rotationCorrection,
         isInitialized,
         isCompleted,
-        currentAudioTrack,
         audioTracks,
       );
 }
@@ -700,7 +691,6 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
     if (_isDisposedOrNotInitialized) {
       return;
     }
-    value = value.copyWith(currentAudioTrack: audioTrack);
     await _videoPlayerPlatform.changeAudioTrack(
         _textureId, audioTrack.groupId, audioTrack.trackId);
   }
