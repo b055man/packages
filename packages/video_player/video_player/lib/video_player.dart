@@ -510,6 +510,8 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
           } else {
             value = value.copyWith(isPlaying: event.isPlaying);
           }
+        case VideoEventType.audioTracksChanged:
+          value = value.copyWith(audioTracks: event.audioTracks);
         case VideoEventType.unknown:
           break;
       }

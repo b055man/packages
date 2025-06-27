@@ -368,6 +368,9 @@ enum VideoEventType {
   /// phone calls, or other app media such as music players.
   isPlayingStateUpdate,
 
+  /// The audio tracks have changed.
+  audioTracksChanged,
+
   /// An unknown event has been received.
   unknown,
 }
