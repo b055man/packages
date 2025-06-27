@@ -129,21 +129,21 @@ final class VideoPlayer {
 
     @OptIn(markerClass = UnstableApi.class)
     void changeAudioTrack(AudioTrack audioTrack) {
-        Tracks currentTracks = exoPlayer.getCurrentTracks();
-        if (audioTrack.groupId <= 0) {
-            Log.i("VideoPlayer", "GroupId smaller or equal zero: " + audioTrack.groupId);
+        if (audioTrack.groupId < 0) {
+            Log.i("VideoPlayer", "GroupId smaller than zero: " + audioTrack.groupId);
             return;
         }
-
+        
+        Tracks currentTracks = exoPlayer.getCurrentTracks();
         List<Tracks.Group> groups = currentTracks.getGroups();
-        if (audioTrack.groupId > groups.size()) {
-            Log.i("VideoPlayer", "GroupId larger than allowed size - groupId " + audioTrack.groupId + ", size:" + groups.size());
+        if (audioTrack.groupId >= groups.size()) {
+            Log.i("VideoPlayer", "GroupId larger or equal than allowed size - groupId " + audioTrack.groupId + ", size:" + groups.size());
             return;
         }
 
         Tracks.Group group = groups.get(audioTrack.groupId);
         if (group.getType() != C.TRACK_TYPE_AUDIO) {
-            Log.i("VideoPlayer", "The group with id: " + audioTrack.groupId + " is not an audio track");
+            Log.i("VideoPlayer", "The track with id: " + audioTrack.groupId + " is not an audio track");
             return;
         }
 
