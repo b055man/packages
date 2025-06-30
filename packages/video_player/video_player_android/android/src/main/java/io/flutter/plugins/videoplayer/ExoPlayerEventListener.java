@@ -56,7 +56,7 @@ final class ExoPlayerEventListener implements Player.Listener {
             if (trackGroup.type == C.TRACK_TYPE_AUDIO) {
                 for (int j = 0; j < trackGroup.length; j++) {
                     Format format = trackGroup.getFormat(j);
-                    boolean isSelected = trackGroupInfo.isTrackSelected(j);
+                    boolean isSelected = trackGroup.isTrackSelected(j);
 
                     AudioTrack audioTrack = new AudioTrack(i, j, format.language, format.label, isSelected);
                     audioTracks.add(audioTrack);
