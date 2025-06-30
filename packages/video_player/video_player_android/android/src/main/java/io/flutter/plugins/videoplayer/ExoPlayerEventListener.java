@@ -20,6 +20,7 @@ import androidx.media3.exoplayer.ExoPlayer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 final class ExoPlayerEventListener implements Player.Listener {
     private final ExoPlayer exoPlayer;
@@ -47,7 +48,7 @@ final class ExoPlayerEventListener implements Player.Listener {
     @OptIn(markerClass = UnstableApi.class)
     private List<AudioTrack> getAudioTracks() {
         List<AudioTrack> audioTracks = new ArrayList<>();
-        Format activeAudioFormat = exoPlayer.getAudioFormat();
+        final Format activeFormat = exoPlayer.getAudioFormat();
 
         List<Tracks.Group> currentTracksGroups = exoPlayer.getCurrentTracks().getGroups();
         for (int i = 0; i < currentTracksGroups.size(); i++) {
@@ -58,7 +59,12 @@ final class ExoPlayerEventListener implements Player.Listener {
             if (trackGroup.type == C.TRACK_TYPE_AUDIO) {
                 for (int j = 0; j < trackGroup.length; j++) {
                     Format format = trackGroup.getFormat(j);
-                    boolean isSelected = format.equals(activeAudioFormat);
+                    boolean isSelected = false;
+                    if (activeFormat != null) {
+                        isSelected = Objects.equals(format.label, activeFormat.label) &&
+                                Objects.equals(format.language, activeFormat.language);
+                    }
+                    //boolean isSelected = tracksGroup.isTrackSelected(j);
 
                     AudioTrack audioTrack = new AudioTrack(i, j, format.language, format.label, isSelected);
                     audioTracks.add(audioTrack);
