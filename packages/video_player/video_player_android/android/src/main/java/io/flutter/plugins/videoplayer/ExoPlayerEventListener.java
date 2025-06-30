@@ -65,9 +65,8 @@ final class ExoPlayerEventListener implements Player.Listener {
                     if (activeFormat != null) {
                         Log.i("ExoPlayerEventListener", "TUTAJ AA 2  ====" + activeFormat.label + " of language: " + activeFormat.language);
                         isSelected = Objects.equals(format.label, activeFormat.label) &&
-                                Objects.equals(format.language, activeFormat.language);
+                                areLanguagesEquivalent(format.language, activeFormat.language);
                     }
-                    //boolean isSelected = tracksGroup.isTrackSelected(j);
 
                     AudioTrack audioTrack = new AudioTrack(i, j, format.language, format.label, isSelected);
                     audioTracks.add(audioTrack);
@@ -77,6 +76,18 @@ final class ExoPlayerEventListener implements Player.Listener {
         }
 
         return audioTracks;
+    }
+
+    private boolean areLanguagesEquivalent(String lang1, String lang2) {
+        // If they are already equal (e.g., both "en" or both null)
+        if (Objects.equals(lang1, lang2)) {
+            return true;
+        }
+        // Treat "und" and null as the same
+        if ((lang1 == null && "und".equals(lang2)) || ("und".equals(lang1) && lang2 == null)) {
+            return true;
+        }
+        return false;
     }
 
     private List<Map<String, Object>> getAudioTracksAsMaps() {
