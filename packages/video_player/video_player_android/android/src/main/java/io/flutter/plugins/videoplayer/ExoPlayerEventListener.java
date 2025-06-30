@@ -130,17 +130,7 @@ final class ExoPlayerEventListener implements Player.Listener {
             setBuffering(false);
         }
     }
-
-    @Override
-    public void onTracksChanged(@NonNull Tracks tracks) {
-        if (!isInitialized) {
-            return;
-        }
-
-        events.onAudioTracksChanged(getAudioTracksAsMaps());
-    }
-
-
+    
     @Override
     public void onPlayerError(@NonNull final PlaybackException error) {
         setBuffering(false);
@@ -157,4 +147,10 @@ final class ExoPlayerEventListener implements Player.Listener {
     public void onIsPlayingChanged(boolean isPlaying) {
         events.onIsPlayingStateUpdate(isPlaying);
     }
+
+    @Override
+    public void onTracksChanged(@NonNull Tracks tracks) {
+        events.onAudioTracksChanged(getAudioTracksAsMaps());
+    }
+
 }
