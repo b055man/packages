@@ -46,11 +46,11 @@ final class ExoPlayerEventListener implements Player.Listener {
     }
 
     @OptIn(markerClass = UnstableApi.class)
-    private List<AudioTrack> getAudioTracks() {
+    private List<AudioTrack> getAudioTracks(Tracks tracks) {
         List<AudioTrack> audioTracks = new ArrayList<>();
         final Format activeFormat = exoPlayer.getAudioFormat();
 
-        List<Tracks.Group> currentTracksGroups = exoPlayer.getCurrentTracks().getGroups();
+        List<Tracks.Group> currentTracksGroups = tracks.getGroups();
         for (int i = 0; i < currentTracksGroups.size(); i++) {
             Tracks.Group tracksGroup = currentTracksGroups.get(i);
             TrackGroup trackGroup = tracksGroup.getMediaTrackGroup();
@@ -90,8 +90,7 @@ final class ExoPlayerEventListener implements Player.Listener {
         return false;
     }
 
-    private List<Map<String, Object>> getAudioTracksAsMaps() {
-        List<AudioTrack> audioTracks = getAudioTracks();
+    private List<Map<String, Object>> getAudioTracksAsMaps(List<AudioTrack> audioTracks) {
         List<Map<String, Object>> audioTracksAsMaps = new ArrayList<>();
         for (AudioTrack audioTrack : audioTracks) {
             audioTracksAsMaps.add(audioTrack.asMap());
@@ -127,7 +126,7 @@ final class ExoPlayerEventListener implements Player.Listener {
             }
         }
 
-        events.onInitialized(width, height, exoPlayer.getDuration(), rotationCorrection, getAudioTracksAsMaps());
+        events.onInitialized(width, height, exoPlayer.getDuration(), rotationCorrection, getAudioTracksAsMaps(getAudioTracks(exoPlayer.getCurrentTracks())));
     }
 
 
@@ -172,7 +171,7 @@ final class ExoPlayerEventListener implements Player.Listener {
     @OptIn(markerClass = UnstableApi.class) @Override
     public void onTracksChanged(@NonNull Tracks tracks) {
         Log.i("ExoPlayerEventListener", "TUTAJ AA SIE WYKONALO");
-        events.onAudioTracksChanged(getAudioTracksAsMaps());
+        events.onAudioTracksChanged(getAudioTracksAsMaps(getAudioTracks(tracks)));
     }
 
 }
