@@ -60,6 +60,8 @@ final class ExoPlayerEventListener implements Player.Listener {
                 for (int j = 0; j < trackGroup.length; j++) {
                     Format format = trackGroup.getFormat(j);
                     boolean isSelected = false;
+
+                    Log.i("ExoPlayerEventListener", "TUTAJ AA" + activeFormat.label + " of language: " + activeFormat.language);
                     if (activeFormat != null) {
                         isSelected = Objects.equals(format.label, activeFormat.label) &&
                                 Objects.equals(format.language, activeFormat.language);
