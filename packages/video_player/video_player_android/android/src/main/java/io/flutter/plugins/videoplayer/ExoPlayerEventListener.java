@@ -169,8 +169,9 @@ final class ExoPlayerEventListener implements Player.Listener {
         events.onIsPlayingStateUpdate(isPlaying);
     }
 
-    @Override
+    @OptIn(markerClass = UnstableApi.class) @Override
     public void onTracksChanged(@NonNull Tracks tracks) {
+        Log.i("ExoPlayerEventListener", "TUTAJ AA SIE WYKONALO");
         events.onAudioTracksChanged(getAudioTracksAsMaps());
     }
 
