@@ -16,6 +16,9 @@ import androidx.media3.common.VideoSize;
 import androidx.media3.common.util.Log;
 import androidx.media3.common.util.UnstableApi;
 import androidx.media3.exoplayer.ExoPlayer;
+import androidx.media3.exoplayer.trackselection.DefaultTrackSelector;
+import androidx.media3.exoplayer.trackselection.MappingTrackSelector;
+import androidx.media3.exoplayer.trackselection.DefaultTrackSelection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,29 +51,43 @@ final class ExoPlayerEventListener implements Player.Listener {
     @OptIn(markerClass = UnstableApi.class)
     private List<AudioTrack> getAudioTracks(Tracks tracks) {
         List<AudioTrack> audioTracks = new ArrayList<>();
-        final Format activeFormat = exoPlayer.getAudioFormat();
 
-        List<Tracks.Group> currentTracksGroups = tracks.getGroups();
-        for (int i = 0; i < currentTracksGroups.size(); i++) {
-            Tracks.Group tracksGroup = currentTracksGroups.get(i);
-            TrackGroup trackGroup = tracksGroup.getMediaTrackGroup();
+        // 1. Get the low-level track selector. This is the definitive source of truth.
+        DefaultTrackSelector trackSelector = (DefaultTrackSelector) exoPlayer.getTrackSelector();
+        MappingTrackSelector.MappedTrackInfo mappedTrackInfo = trackSelector.getCurrentMappedTrackInfo();
 
-            Log.i("ExoPlayerEventListener", "Processing track group nr: " + i + " of type: " + trackGroup.type);
-            if (trackGroup.type == C.TRACK_TYPE_AUDIO) {
-                for (int j = 0; j < trackGroup.length; j++) {
-                    Format format = trackGroup.getFormat(j);
-                    boolean isSelected = false;
+        TrackGroup activeAudioTrackGroup = null;
+        int activeAudioTrackIndex = -1; // Default to -1 (no track selected)
 
-                    Log.i("ExoPlayerEventListener", "TUTAJ AA 1  ==== " + format.label + " of language: " + format.language);
-                    if (activeFormat != null) {
-                        Log.i("ExoPlayerEventListener", "TUTAJ AA 2  ====" + activeFormat.label + " of language: " + activeFormat.language);
-                        isSelected = Objects.equals(format.label, activeFormat.label) &&
-                                areLanguagesEquivalent(format.language, activeFormat.language);
+        if (mappedTrackInfo != null) {
+            // Find the audio renderer's track selection.
+            for (int rendererIndex = 0; rendererIndex < mappedTrackInfo.getRendererCount(); rendererIndex++) {
+                if (mappedTrackInfo.getRendererType(rendererIndex) == C.TRACK_TYPE_AUDIO) {
+                    // 2. Get the definitive selection state for the audio renderer.
+                    DefaultTrackSelection selection = (DefaultTrackSelection) exoPlayer.getTrackSelection(rendererIndex);
+                    if (selection != null) {
+                        activeAudioTrackGroup = selection.getTrackGroup();
+                        activeAudioTrackIndex = selection.getSelectedIndex();
+                        break; // Exit after finding the audio renderer
                     }
+                }
+            }
+        }
+
+        // Now loop through all available tracks from the passed-in 'tracks' object.
+        List<Tracks.Group> trackGroups = tracks.getGroups();
+        for (int i = 0; i < trackGroups.size(); i++) {
+            TrackGroup mediaTrackGroup = trackGroups.get(i).getMediaTrackGroup();
+
+            if (mediaTrackGroup.type == C.TRACK_TYPE_AUDIO) {
+                for (int j = 0; j < mediaTrackGroup.length; j++) {
+                    Format format = mediaTrackGroup.getFormat(j);
+
+                    // 3. A track is current if its group and index match the active ones.
+                    boolean isSelected = mediaTrackGroup.equals(activeAudioTrackGroup) && j == activeAudioTrackIndex;
 
                     AudioTrack audioTrack = new AudioTrack(i, j, format.language, format.label, isSelected);
                     audioTracks.add(audioTrack);
-                    Log.i("ExoPlayerEventListener", "AudioTrack added: " + audioTrack);
                 }
             }
         }
