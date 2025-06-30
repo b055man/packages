@@ -20,7 +20,6 @@ import androidx.media3.exoplayer.ExoPlayer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 final class ExoPlayerEventListener implements Player.Listener {
     private final ExoPlayer exoPlayer;
@@ -61,17 +60,6 @@ final class ExoPlayerEventListener implements Player.Listener {
                     Format format = trackGroup.getFormat(j);
                     boolean isSelected = tracksGroup.isTrackSelected(j);
 
-                    //Log.i("ExoPlayerEventListener", "TUTAJ AA 1  ==== " + format.label + " of language: " + format.language);
-                    //if (activeFormat != null) {
-                    //    Log.i("ExoPlayerEventListener", "TUTAJ AA 2  ====" + activeFormat.label + " of language: " + activeFormat.language);
-                    //    isSelected = Objects.equals(format.label, activeFormat.label) &&
-                    //            areLanguagesEquivalent(format.language, activeFormat.language);
-                    //}
-
-                    //Log.i("ExoPlayerEventListener", "TUTAJ AA 3  ==== " + tracksGroup.isTrackSelected(j));
-
-                    Log.i("ExoPlayerEventListener", "TUTAJ SELECTED = " + isSelected);
-
                     AudioTrack audioTrack = new AudioTrack(i, j, format.language, format.label, isSelected);
                     audioTracks.add(audioTrack);
                     Log.i("ExoPlayerEventListener", "AudioTrack added: " + audioTrack);
@@ -80,18 +68,6 @@ final class ExoPlayerEventListener implements Player.Listener {
         }
 
         return audioTracks;
-    }
-
-    private boolean areLanguagesEquivalent(String lang1, String lang2) {
-        // If they are already equal (e.g., both "en" or both null)
-        if (Objects.equals(lang1, lang2)) {
-            return true;
-        }
-        // Treat "und" and null as the same
-        if ((lang1 == null && "und".equals(lang2)) || ("und".equals(lang1) && lang2 == null)) {
-            return true;
-        }
-        return false;
     }
 
     private List<Map<String, Object>> getAudioTracksAsMaps() {
@@ -131,9 +107,7 @@ final class ExoPlayerEventListener implements Player.Listener {
             }
         }
 
-        Log.i("ExoPlayerEventListener", "TUTAJ AA INICJALIZACJA");
-
-        events.onInitialized(width, height, exoPlayer.getDuration(), rotationCorrection, getAudioTracksAsMaps());
+        events.onInitialized(width, height, exoPlayer.getDuration(), rotationCorrection);
     }
 
 
@@ -177,7 +151,7 @@ final class ExoPlayerEventListener implements Player.Listener {
 
     @OptIn(markerClass = UnstableApi.class) @Override
     public void onTracksChanged(@NonNull Tracks tracks) {
-        Log.i("ExoPlayerEventListener", "TUTAJ AA TRACK CHANGE");
+        Log.i("ExoPlayerEventListener", "Track change detected, updating audio tracks.");
         events.onAudioTracksChanged(getAudioTracksAsMaps());
     }
 
