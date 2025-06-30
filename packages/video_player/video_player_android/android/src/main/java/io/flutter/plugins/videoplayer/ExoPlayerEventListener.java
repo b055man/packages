@@ -70,6 +70,8 @@ final class ExoPlayerEventListener implements Player.Listener {
 
                     //Log.i("ExoPlayerEventListener", "TUTAJ AA 3  ==== " + tracksGroup.isTrackSelected(j));
 
+                    Log.i("ExoPlayerEventListener", "TUTAJ SELECTED = " + isSelected);
+
                     AudioTrack audioTrack = new AudioTrack(i, j, format.language, format.label, isSelected);
                     audioTracks.add(audioTrack);
                     Log.i("ExoPlayerEventListener", "AudioTrack added: " + audioTrack);
@@ -129,7 +131,7 @@ final class ExoPlayerEventListener implements Player.Listener {
             }
         }
 
-        //
+        Log.i("ExoPlayerEventListener", "TUTAJ AA INICJALIZACJA");
 
         events.onInitialized(width, height, exoPlayer.getDuration(), rotationCorrection, getAudioTracksAsMaps());
     }
@@ -175,7 +177,7 @@ final class ExoPlayerEventListener implements Player.Listener {
 
     @OptIn(markerClass = UnstableApi.class) @Override
     public void onTracksChanged(@NonNull Tracks tracks) {
-        Log.i("ExoPlayerEventListener", "TUTAJ AA SIE WYKONALO");
+        Log.i("ExoPlayerEventListener", "TUTAJ AA TRACK CHANGE");
         events.onAudioTracksChanged(getAudioTracksAsMaps());
     }
 
