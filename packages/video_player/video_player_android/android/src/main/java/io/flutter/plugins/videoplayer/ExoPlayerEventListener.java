@@ -16,6 +16,8 @@ import androidx.media3.common.VideoSize;
 import androidx.media3.common.util.Log;
 import androidx.media3.common.util.UnstableApi;
 import androidx.media3.exoplayer.ExoPlayer;
+import androidx.media3.exoplayer.trackselection.TrackSelection;
+import androidx.media3.exoplayer.trackselection.TrackSelectionArray;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,31 +48,38 @@ final class ExoPlayerEventListener implements Player.Listener {
     }
 
     @OptIn(markerClass = UnstableApi.class)
-    private List<AudioTrack> getAudioTracks(Tracks tracks) {
+    private List<AudioTrack> getAudioTracks() {
         List<AudioTrack> audioTracks = new ArrayList<>();
-        final Format activeFormat = exoPlayer.getAudioFormat();
 
-        List<Tracks.Group> currentTracksGroups = tracks.getGroups();
+        // 1. Get the single active audio format using the older TrackSelectionArray API.
+        Format activeAudioFormat = null;
+        TrackSelectionArray trackSelections = exoPlayer.getCurrentTrackSelections();
+        for (int i = 0; i < trackSelections.length; i++) {
+            TrackSelection selection = trackSelections.get(i);
+            if (selection != null && exoPlayer.getRendererType(i) == C.TRACK_TYPE_AUDIO) {
+                activeAudioFormat = selection.getFormat(i);
+                break; // Found the active audio selection
+            }
+        }
+
+        // 2. Loop through all available tracks and compare them to the active one.
+        List<Tracks.Group> currentTracksGroups = exoPlayer.getCurrentTracks().getGroups();
         for (int i = 0; i < currentTracksGroups.size(); i++) {
-            Tracks.Group tracksGroup = currentTracksGroups.get(i);
-            TrackGroup trackGroup = tracksGroup.getMediaTrackGroup();
+            TrackGroup mediaTrackGroup = currentTracksGroups.get(i).getMediaTrackGroup();
 
-            Log.i("ExoPlayerEventListener", "Processing track group nr: " + i + " of type: " + trackGroup.type);
-            if (trackGroup.type == C.TRACK_TYPE_AUDIO) {
-                for (int j = 0; j < trackGroup.length; j++) {
-                    Format format = trackGroup.getFormat(j);
+            if (mediaTrackGroup.type == C.TRACK_TYPE_AUDIO) {
+                for (int j = 0; j < mediaTrackGroup.length; j++) {
+                    Format format = mediaTrackGroup.getFormat(j);
+
+                    // Use the lenient comparison we created before
                     boolean isSelected = false;
-
-                    Log.i("ExoPlayerEventListener", "TUTAJ AA 1  ==== " + format.label + " of language: " + format.language);
-                    if (activeFormat != null) {
-                        Log.i("ExoPlayerEventListener", "TUTAJ AA 2  ====" + activeFormat.label + " of language: " + activeFormat.language);
-                        isSelected = Objects.equals(format.label, activeFormat.label) &&
-                                areLanguagesEquivalent(format.language, activeFormat.language);
+                    if (activeAudioFormat != null) {
+                        isSelected = Objects.equals(format.label, activeAudioFormat.label) &&
+                                areLanguagesEquivalent(format.language, activeAudioFormat.language);
                     }
 
                     AudioTrack audioTrack = new AudioTrack(i, j, format.language, format.label, isSelected);
                     audioTracks.add(audioTrack);
-                    Log.i("ExoPlayerEventListener", "AudioTrack added: " + audioTrack);
                 }
             }
         }
