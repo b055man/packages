@@ -16,7 +16,6 @@ import androidx.media3.common.VideoSize;
 import androidx.media3.common.util.Log;
 import androidx.media3.common.util.UnstableApi;
 import androidx.media3.exoplayer.ExoPlayer;
-import androidx.media3.exoplayer.trackselection.MappingTrackSelector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +50,7 @@ final class ExoPlayerEventListener implements Player.Listener {
         List<AudioTrack> audioTracks = new ArrayList<>();
         final Format activeFormat = exoPlayer.getAudioFormat();
 
-        List<Tracks.Group> currentTracksGroups = tracks.getGroups();
+        List<Tracks.Group> currentTracksGroups = exoPlayer.getCurrentTracks().getGroups();
         for (int i = 0; i < currentTracksGroups.size(); i++) {
             Tracks.Group tracksGroup = currentTracksGroups.get(i);
             TrackGroup trackGroup = tracksGroup.getMediaTrackGroup();
