@@ -46,7 +46,7 @@ final class ExoPlayerEventListener implements Player.Listener {
     }
 
     @OptIn(markerClass = UnstableApi.class)
-    private List<AudioTrack> getAudioTracks(Tracks tracks) {
+    private List<AudioTrack> getAudioTracks() {
         List<AudioTrack> audioTracks = new ArrayList<>();
         final Format activeFormat = exoPlayer.getAudioFormat();
 
@@ -92,7 +92,8 @@ final class ExoPlayerEventListener implements Player.Listener {
         return false;
     }
 
-    private List<Map<String, Object>> getAudioTracksAsMaps(List<AudioTrack> audioTracks) {
+    private List<Map<String, Object>> getAudioTracksAsMaps() {
+        List<AudioTrack> audioTracks = getAudioTracks();
         List<Map<String, Object>> audioTracksAsMaps = new ArrayList<>();
         for (AudioTrack audioTrack : audioTracks) {
             audioTracksAsMaps.add(audioTrack.asMap());
@@ -128,7 +129,9 @@ final class ExoPlayerEventListener implements Player.Listener {
             }
         }
 
-        events.onInitialized(width, height, exoPlayer.getDuration(), rotationCorrection, getAudioTracksAsMaps(getAudioTracks(exoPlayer.getCurrentTracks())));
+        //
+
+        events.onInitialized(width, height, exoPlayer.getDuration(), rotationCorrection, getAudioTracksAsMaps());
     }
 
 
@@ -173,7 +176,7 @@ final class ExoPlayerEventListener implements Player.Listener {
     @OptIn(markerClass = UnstableApi.class) @Override
     public void onTracksChanged(@NonNull Tracks tracks) {
         Log.i("ExoPlayerEventListener", "TUTAJ AA SIE WYKONALO");
-        events.onAudioTracksChanged(getAudioTracksAsMaps(getAudioTracks(tracks)));
+        events.onAudioTracksChanged(getAudioTracksAsMaps());
     }
 
 }

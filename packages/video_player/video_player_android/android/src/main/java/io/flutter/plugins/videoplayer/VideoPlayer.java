@@ -155,7 +155,6 @@ final class VideoPlayer {
         TrackSelectionOverride override = new TrackSelectionOverride(group.getMediaTrackGroup(), audioTrack.trackId);
         exoPlayer.setTrackSelectionParameters(
                 exoPlayer.getTrackSelectionParameters().buildUpon()
-                        .clearOverridesOfType(C.TRACK_TYPE_AUDIO)
                         .setOverrideForType(override)
                         .build()
         );
