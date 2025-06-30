@@ -53,7 +53,6 @@ final class ExoPlayerEventListener implements Player.Listener {
             Tracks.Group tracksGroup = currentTracksGroups.get(i);
             TrackGroup trackGroup = tracksGroup.getMediaTrackGroup();
 
-            Log.i("ExoPlayerEventListener", "TUTAJ 1");
             Log.i("ExoPlayerEventListener", "Processing track group nr: " + i + " of type: " + trackGroup.type);
             if (trackGroup.type == C.TRACK_TYPE_AUDIO) {
                 for (int j = 0; j < trackGroup.length; j++) {
@@ -131,6 +130,16 @@ final class ExoPlayerEventListener implements Player.Listener {
             setBuffering(false);
         }
     }
+
+    @Override
+    public void onTracksChanged(@NonNull Tracks tracks) {
+        if (!isInitialized) {
+            return;
+        }
+
+        events.onAudioTracksChanged(getAudioTracksAsMaps());
+    }
+
 
     @Override
     public void onPlayerError(@NonNull final PlaybackException error) {
