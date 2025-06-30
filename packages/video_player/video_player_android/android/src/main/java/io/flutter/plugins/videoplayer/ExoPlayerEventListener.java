@@ -60,16 +60,16 @@ final class ExoPlayerEventListener implements Player.Listener {
             if (trackGroup.type == C.TRACK_TYPE_AUDIO) {
                 for (int j = 0; j < trackGroup.length; j++) {
                     Format format = trackGroup.getFormat(j);
-                    boolean isSelected = false;
+                    boolean isSelected = tracksGroup.isTrackSelected(j);
 
-                    Log.i("ExoPlayerEventListener", "TUTAJ AA 1  ==== " + format.label + " of language: " + format.language);
-                    if (activeFormat != null) {
-                        Log.i("ExoPlayerEventListener", "TUTAJ AA 2  ====" + activeFormat.label + " of language: " + activeFormat.language);
-                        isSelected = Objects.equals(format.label, activeFormat.label) &&
-                                areLanguagesEquivalent(format.language, activeFormat.language);
-                    }
+                    //Log.i("ExoPlayerEventListener", "TUTAJ AA 1  ==== " + format.label + " of language: " + format.language);
+                    //if (activeFormat != null) {
+                    //    Log.i("ExoPlayerEventListener", "TUTAJ AA 2  ====" + activeFormat.label + " of language: " + activeFormat.language);
+                    //    isSelected = Objects.equals(format.label, activeFormat.label) &&
+                    //            areLanguagesEquivalent(format.language, activeFormat.language);
+                    //}
 
-                    Log.i("ExoPlayerEventListener", "TUTAJ AA 3  ==== " + tracksGroup.isTrackSelected(j));
+                    //Log.i("ExoPlayerEventListener", "TUTAJ AA 3  ==== " + tracksGroup.isTrackSelected(j));
 
                     AudioTrack audioTrack = new AudioTrack(i, j, format.language, format.label, isSelected);
                     audioTracks.add(audioTrack);
