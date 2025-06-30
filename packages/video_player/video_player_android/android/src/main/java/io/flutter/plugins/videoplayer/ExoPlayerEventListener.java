@@ -47,6 +47,7 @@ final class ExoPlayerEventListener implements Player.Listener {
     @OptIn(markerClass = UnstableApi.class)
     private List<AudioTrack> getAudioTracks() {
         List<AudioTrack> audioTracks = new ArrayList<>();
+        Format activeAudioFormat = exoPlayer.getAudioFormat();
 
         List<Tracks.Group> currentTracksGroups = exoPlayer.getCurrentTracks().getGroups();
         for (int i = 0; i < currentTracksGroups.size(); i++) {
@@ -57,7 +58,7 @@ final class ExoPlayerEventListener implements Player.Listener {
             if (trackGroup.type == C.TRACK_TYPE_AUDIO) {
                 for (int j = 0; j < trackGroup.length; j++) {
                     Format format = trackGroup.getFormat(j);
-                    boolean isSelected = tracksGroup.isTrackSelected(j);
+                    boolean isSelected = format.equals(activeAudioFormat);
 
                     AudioTrack audioTrack = new AudioTrack(i, j, format.language, format.label, isSelected);
                     audioTracks.add(audioTrack);
