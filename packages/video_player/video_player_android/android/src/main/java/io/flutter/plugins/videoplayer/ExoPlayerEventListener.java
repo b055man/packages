@@ -132,18 +132,6 @@ final class ExoPlayerEventListener implements Player.Listener {
         }
     }
 
-    @OptIn(markerClass = UnstableApi.class) @Override
-    public void onTracksChanged(@NonNull Tracks tracks) {
-        if (!isInitialized) {
-            return;
-        }
-
-        Log.i("ExoPlayerEventListener", "TUTAJ 2");
-        
-        events.onAudioTracksChanged(getAudioTracksAsMaps());
-    }
-
-
     @Override
     public void onPlayerError(@NonNull final PlaybackException error) {
         setBuffering(false);
