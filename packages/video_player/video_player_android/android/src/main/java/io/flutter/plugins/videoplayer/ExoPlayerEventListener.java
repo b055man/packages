@@ -16,6 +16,7 @@ import androidx.media3.common.VideoSize;
 import androidx.media3.common.util.Log;
 import androidx.media3.common.util.UnstableApi;
 import androidx.media3.exoplayer.ExoPlayer;
+import androidx.media3.exoplayer.trackselection.MappingTrackSelector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +50,6 @@ final class ExoPlayerEventListener implements Player.Listener {
     private List<AudioTrack> getAudioTracks(Tracks tracks) {
         List<AudioTrack> audioTracks = new ArrayList<>();
         final Format activeFormat = exoPlayer.getAudioFormat();
-        final int z = exoPlayer.getCurrentMediaItemIndex();
 
         List<Tracks.Group> currentTracksGroups = tracks.getGroups();
         for (int i = 0; i < currentTracksGroups.size(); i++) {
@@ -69,7 +69,7 @@ final class ExoPlayerEventListener implements Player.Listener {
                                 areLanguagesEquivalent(format.language, activeFormat.language);
                     }
 
-                    Log.i("ExoPlayerEventListener", "TUTAJ AA 3  ==== " + tracksGroup.isSelected());
+                    Log.i("ExoPlayerEventListener", "TUTAJ AA 3  ==== " + tracksGroup.isTrackSelected(j));
 
                     AudioTrack audioTrack = new AudioTrack(i, j, format.language, format.label, isSelected);
                     audioTracks.add(audioTrack);
@@ -173,6 +173,7 @@ final class ExoPlayerEventListener implements Player.Listener {
 
     @OptIn(markerClass = UnstableApi.class) @Override
     public void onTracksChanged(@NonNull Tracks tracks) {
+        MappingTrackSelector.MappedTrackInfo mappedTrackInfo = trackSelector.getCurrentMappedTrackInfo();
         Log.i("ExoPlayerEventListener", "TUTAJ AA SIE WYKONALO");
         events.onAudioTracksChanged(getAudioTracksAsMaps(getAudioTracks(tracks)));
     }
