@@ -71,7 +71,7 @@ final class ExoPlayerEventListener implements Player.Listener {
             }
         }
 
-        events.onInitialized(width, height, exoPlayer.getDuration(), rotationCorrection);
+        events.onInitialized(width, height, exoPlayer.getDuration(), rotationCorrection, getAudioTracksAsMaps());
     }
 
 

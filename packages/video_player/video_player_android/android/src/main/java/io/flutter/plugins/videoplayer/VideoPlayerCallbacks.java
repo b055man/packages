@@ -20,7 +20,7 @@ import java.util.Map;
  * <p>See {@link androidx.media3.common.Player.Listener} for details.
  */
 interface VideoPlayerCallbacks {
-    void onInitialized(int width, int height, long durationInMs, int rotationCorrectionInDegrees);
+    void onInitialized(int width, int height, long durationInMs, int rotationCorrectionInDegrees, List<Map<String, Object>> audioTracks);
 
     void onBufferingStart();
 
