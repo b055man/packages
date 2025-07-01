@@ -689,26 +689,26 @@ NS_INLINE CGFloat radiansToDegrees(CGFloat radians) {
 
   [_player.currentItem selectMediaOption:option inMediaSelectionGroup:group];
 
-  // NSLog(@"[VideoPlayer] DEBUG: selectMediaOption call completed. Fetching updated tracks...");
+  NSLog(@"[VideoPlayer] DEBUG: selectMediaOption call completed. Fetching updated tracks...");
 
-  // [self fetchAudioTracksWithCompletion:^(NSMutableArray<AudioTrack *> *audioTracks) {
-  //   if (audioTracks) {
-  //       NSLog(@"[VideoPlayer] DEBUG: Fetch completion handler called. Track count: %lu", (unsigned long)audioTracks.count);
-  //       if (self.eventSink) {
-  //           NSLog(@"[VideoPlayer] DEBUG: EventSink is valid. Preparing to send 'audioTracksUpdated' event.");
-  //           NSArray<NSDictionary *> *audioTracksAsMap = [audioTracks valueForKey:@"asMap"];
-  //           NSLog(@"[VideoPlayer] DEBUG: Sending event data: %@", audioTracksAsMap);
-  //           _eventSink(@{
-  //               @"event" : @"audioTracksChanged",
-  //               @"audioTracks" : audioTracksAsMap,
-  //           });
-  //       } else {
-  //           NSLog(@"[VideoPlayer] DEBUG: FAILED - EventSink is nil.");
-  //       }
-  //   } else {
-  //       NSLog(@"[VideoPlayer] DEBUG: FAILED - fetchAudioTracksWithCompletion returned nil tracks.");
-  //   }
-  // }];
+  [self fetchAudioTracksWithCompletion:^(NSMutableArray<AudioTrack *> *audioTracks) {
+    if (audioTracks) {
+        NSLog(@"[VideoPlayer] DEBUG: Fetch completion handler called. Track count: %lu", (unsigned long)audioTracks.count);
+        if (self.eventSink) {
+            NSLog(@"[VideoPlayer] DEBUG: EventSink is valid. Preparing to send 'audioTracksUpdated' event.");
+            NSArray<NSDictionary *> *audioTracksAsMap = [audioTracks valueForKey:@"asMap"];
+            NSLog(@"[VideoPlayer] DEBUG: Sending event data: %@", audioTracksAsMap);
+            _eventSink(@{
+                @"event" : @"audioTracksChanged",
+                @"audioTracks" : audioTracksAsMap,
+            });
+        } else {
+            NSLog(@"[VideoPlayer] DEBUG: FAILED - EventSink is nil.");
+        }
+    } else {
+        NSLog(@"[VideoPlayer] DEBUG: FAILED - fetchAudioTracksWithCompletion returned nil tracks.");
+    }
+  }];
 }
 
 - (void)onTextureUnregistered:(NSObject<FlutterTexture> *)texture {
