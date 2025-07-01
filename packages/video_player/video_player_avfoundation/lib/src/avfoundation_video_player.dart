@@ -159,6 +159,8 @@ class AVFoundationVideoPlayer extends VideoPlayerPlatform {
     try {
       print('TUTAJ $audioTracks');
       for (final Object? track in map['audioTracks'] as List<Object?>) {
+        print('TUTAJ audioTrack ${track}');
+        print('TUTAJ map ${map['audioTracks']}');
         print('TUTAJ 1');
         if (track == null) {
           continue;
