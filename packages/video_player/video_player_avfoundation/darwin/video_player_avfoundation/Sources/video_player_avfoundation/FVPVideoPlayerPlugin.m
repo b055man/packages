@@ -409,7 +409,7 @@ NS_INLINE CGFloat radiansToDegrees(CGFloat radians) {
       if (audioTracks && self.eventSink) {
         NSArray<NSDictionary *> *audioTracksAsMap = [audioTracks valueForKey:@"asMap"];
         _eventSink(@{
-          @"event" : @"audioTracksUpdated",
+          @"event" : @"audioTracksChanged",
           @"audioTracks" : audioTracksAsMap,
         });
       }
@@ -699,7 +699,7 @@ NS_INLINE CGFloat radiansToDegrees(CGFloat radians) {
             NSArray<NSDictionary *> *audioTracksAsMap = [audioTracks valueForKey:@"asMap"];
             NSLog(@"[VideoPlayer] DEBUG: Sending event data: %@", audioTracksAsMap);
             _eventSink(@{
-                @"event" : @"audioTracksUpdated",
+                @"event" : @"audioTracksChanged",
                 @"audioTracks" : audioTracksAsMap,
             });
         } else {
