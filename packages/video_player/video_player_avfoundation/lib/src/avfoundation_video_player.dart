@@ -157,15 +157,17 @@ class AVFoundationVideoPlayer extends VideoPlayerPlatform {
   List<AudioTrack> _getAudioTracksFromMap(Map<dynamic, dynamic> map) {
     final List<AudioTrack> audioTracks = <AudioTrack>[];
     try {
+      print('TUTAJ $audioTracks');
       for (final Object? track in map['audioTracks'] as List<Object?>) {
+        print('TUTAJ 1');
         if (track == null) {
           continue;
         }
-
+        print('TUTAJ 2');
         if (track is! Map) {
           continue;
         }
-
+        print('TUTAJ 3');
         final Map<String, Object?> trackAsMap = track.cast<String, Object?>();
         final int? groupId = trackAsMap['groupId'] as int?;
         final int? trackId = trackAsMap['trackId'] as int?;
@@ -176,6 +178,7 @@ class AVFoundationVideoPlayer extends VideoPlayerPlatform {
         if (groupId == null || trackId == null) {
           continue;
         }
+        print('TUTAJ 4');
 
         audioTracks.add(AudioTrack(
           groupId: groupId,
@@ -186,6 +189,7 @@ class AVFoundationVideoPlayer extends VideoPlayerPlatform {
         ));
       }
     } catch (e) {
+      print('TUTAJ ERROR');
       // ignore - failing parsing audio tracks should not crash the player
     }
 
