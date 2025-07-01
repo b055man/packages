@@ -516,11 +516,13 @@ NS_INLINE CGFloat radiansToDegrees(CGFloat radians) {
     NSLog(@"Processing media selection group nr: %ld", (long)groupIndex);
     for (NSInteger optionIndex = 0; optionIndex < group.options.count; optionIndex++) {
       AVMediaSelectionOption *option = group.options[optionIndex];
+      AVMediaSelectionOption *selectedOption =
+        [currentItem selectedMediaOptionInMediaSelectionGroup:group];
 
       if (option.isPlayable && [option.mediaType isEqualToString:AVMediaTypeAudio]) {
         NSString *label = [self findTitleFromMetadata:option.commonMetadata];
         NSString *language = option.locale.localeIdentifier;
-        BOOL isCurrent = [option isEqual:group.selectedOption];
+        BOOL isCurrent = [option isEqual:selectedOption];
 
         AudioTrack *track = [[AudioTrack alloc] initWithGroupId:(int)groupIndex
                                                         trackId:(int)optionIndex
