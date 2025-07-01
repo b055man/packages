@@ -509,6 +509,7 @@ NS_INLINE CGFloat radiansToDegrees(CGFloat radians) {
 - (NSMutableArray<AudioTrack *> *)createAudioTracksFromMediaGroups:
     (NSArray<AVMediaSelectionGroup *> *)groups {
   NSMutableArray<AudioTrack *> *audioTracks = [NSMutableArray array];
+  AVPlayerItem *currentItem = _player.currentItem;
 
   for (NSInteger groupIndex = 0; groupIndex < groups.count; groupIndex++) {
     AVMediaSelectionGroup *group = groups[groupIndex];
