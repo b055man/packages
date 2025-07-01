@@ -45,42 +45,6 @@ final class ExoPlayerEventListener implements Player.Listener {
     }
 
     @OptIn(markerClass = UnstableApi.class)
-    private List<AudioTrack> getAudioTracks() {
-        List<AudioTrack> audioTracks = new ArrayList<>();
-        final Format activeFormat = exoPlayer.getAudioFormat();
-
-        List<Tracks.Group> currentTracksGroups = exoPlayer.getCurrentTracks().getGroups();
-        for (int i = 0; i < currentTracksGroups.size(); i++) {
-            Tracks.Group tracksGroup = currentTracksGroups.get(i);
-            TrackGroup trackGroup = tracksGroup.getMediaTrackGroup();
-
-            Log.i("ExoPlayerEventListener", "Processing track group nr: " + i + " of type: " + trackGroup.type);
-            if (trackGroup.type == C.TRACK_TYPE_AUDIO) {
-                for (int j = 0; j < trackGroup.length; j++) {
-                    Format format = trackGroup.getFormat(j);
-                    boolean isSelected = tracksGroup.isTrackSelected(j);
-
-                    AudioTrack audioTrack = new AudioTrack(i, j, format.language, format.label, isSelected);
-                    audioTracks.add(audioTrack);
-                    Log.i("ExoPlayerEventListener", "AudioTrack added: " + audioTrack);
-                }
-            }
-        }
-
-        return audioTracks;
-    }
-
-    private List<Map<String, Object>> getAudioTracksAsMaps() {
-        List<AudioTrack> audioTracks = getAudioTracks();
-        List<Map<String, Object>> audioTracksAsMaps = new ArrayList<>();
-        for (AudioTrack audioTrack : audioTracks) {
-            audioTracksAsMaps.add(audioTrack.asMap());
-        }
-        return audioTracksAsMaps;
-    }
-
-
-    @OptIn(markerClass = UnstableApi.class)
     @SuppressWarnings("SuspiciousNameCombination")
     private void sendInitialized() {
         if (isInitialized) {
@@ -107,7 +71,7 @@ final class ExoPlayerEventListener implements Player.Listener {
             }
         }
 
-        events.onInitialized(width, height, exoPlayer.getDuration(), rotationCorrection, getAudioTracksAsMaps());
+        events.onInitialized(width, height, exoPlayer.getDuration(), rotationCorrection);
     }
 
 
@@ -155,4 +119,38 @@ final class ExoPlayerEventListener implements Player.Listener {
         events.onAudioTracksChanged(getAudioTracksAsMaps());
     }
 
+    @OptIn(markerClass = UnstableApi.class)
+    private List<AudioTrack> getAudioTracks() {
+        List<AudioTrack> audioTracks = new ArrayList<>();
+        final Format activeFormat = exoPlayer.getAudioFormat();
+
+        List<Tracks.Group> currentTracksGroups = exoPlayer.getCurrentTracks().getGroups();
+        for (int i = 0; i < currentTracksGroups.size(); i++) {
+            Tracks.Group tracksGroup = currentTracksGroups.get(i);
+            TrackGroup trackGroup = tracksGroup.getMediaTrackGroup();
+
+            Log.i("ExoPlayerEventListener", "Processing track group nr: " + i + " of type: " + trackGroup.type);
+            if (trackGroup.type == C.TRACK_TYPE_AUDIO) {
+                for (int j = 0; j < trackGroup.length; j++) {
+                    Format format = trackGroup.getFormat(j);
+                    boolean isSelected = tracksGroup.isTrackSelected(j);
+
+                    AudioTrack audioTrack = new AudioTrack(i, j, format.language, format.label, isSelected);
+                    audioTracks.add(audioTrack);
+                    Log.i("ExoPlayerEventListener", "AudioTrack added: " + audioTrack);
+                }
+            }
+        }
+
+        return audioTracks;
+    }
+
+    private List<Map<String, Object>> getAudioTracksAsMaps() {
+        List<AudioTrack> audioTracks = getAudioTracks();
+        List<Map<String, Object>> audioTracksAsMaps = new ArrayList<>();
+        for (AudioTrack audioTrack : audioTracks) {
+            audioTracksAsMaps.add(audioTrack.asMap());
+        }
+        return audioTracksAsMaps;
+    }
 }
