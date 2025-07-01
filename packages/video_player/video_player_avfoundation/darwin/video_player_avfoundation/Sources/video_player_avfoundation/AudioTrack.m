@@ -33,7 +33,7 @@
     @"trackId" : @(self.trackId),
     @"language" : self.language ?: [NSNull null],
     @"label" : self.label ?: [NSNull null],
-    @"isCurrent" : @(self.isCurrent)
+    @"isCurrent" : [NSNumber numberWithBool:self.isCurrent]
   };
 }
 
