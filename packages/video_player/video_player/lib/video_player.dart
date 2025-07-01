@@ -474,7 +474,7 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
             isInitialized: event.duration != null,
             errorDescription: null,
             isCompleted: false,
-            audioTracks: event.audioTrack,
+            audioTracks: event.audioTracks,
           );
           assert(
             !initializingCompleter.isCompleted,
