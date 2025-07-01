@@ -688,6 +688,16 @@ NS_INLINE CGFloat radiansToDegrees(CGFloat radians) {
   AVMediaSelectionOption *option = group.options[audioTrack.trackId];
 
   [_player.currentItem selectMediaOption:option inMediaSelectionGroup:group];
+
+  [self fetchAudioTracksWithCompletion:^(NSMutableArray<AudioTrack *> *audioTracks) {
+    if (audioTracks && self.eventSink) {
+      NSArray<NSDictionary *> *audioTracksAsMap = [audioTracks valueForKey:@"asMap"];
+      _eventSink(@{
+        @"event" : @"audioTracksUpdated",
+        @"audioTracks" : audioTracksAsMap,
+      });
+    }
+  }];
 }
 
 - (void)onTextureUnregistered:(NSObject<FlutterTexture> *)texture {
