@@ -116,47 +116,16 @@ class AVFoundationVideoPlayer extends VideoPlayerPlatform {
       final Map<dynamic, dynamic> map = event as Map<dynamic, dynamic>;
       switch (map['event']) {
         case 'initialized':
-          final List<AudioTrack> audioTracks = <AudioTrack>[];
-          try {
-            for (final Object? track in map['audioTracks'] as List<Object?>) {
-              if (track == null) {
-                continue;
-              }
-
-              if (track is! Map) {
-                continue;
-              }
-
-              final Map<String, Object?> trackAsMap =
-                  track.cast<String, Object?>();
-              final int? groupId = trackAsMap['groupId'] as int?;
-              final int? trackId = trackAsMap['trackId'] as int?;
-              final String? label = trackAsMap['label'] as String?;
-              final String? language = trackAsMap['language'] as String?;
-              final bool? isCurrent = trackAsMap['isCurrent'] as bool?;
-
-              if (groupId == null || trackId == null) {
-                continue;
-              }
-
-              audioTracks.add(AudioTrack(
-                groupId: groupId,
-                trackId: trackId,
-                label: label,
-                language: language,
-                isCurrent: isCurrent ?? false,
-              ));
-            }
-          } catch (e) {
-            // ignore - failing parsing audio tracks should not crash the player
-          }
-
           return VideoEvent(
             eventType: VideoEventType.initialized,
             duration: Duration(milliseconds: map['duration'] as int),
             size: Size((map['width'] as num?)?.toDouble() ?? 0.0,
                 (map['height'] as num?)?.toDouble() ?? 0.0),
-            audioTracks: audioTracks,
+          );
+        case 'audioTracksChanged':
+          return VideoEvent(
+            eventType: VideoEventType.audioTracksChanged,
+            audioTracks: _getAudioTracksFromMap(map),
           );
         case 'completed':
           return VideoEvent(
@@ -182,6 +151,44 @@ class AVFoundationVideoPlayer extends VideoPlayerPlatform {
           return VideoEvent(eventType: VideoEventType.unknown);
       }
     });
+  }
+
+  List<AudioTrack> _getAudioTracksFromMap(Map<dynamic, dynamic> map) {
+    final List<AudioTrack> audioTracks = <AudioTrack>[];
+    try {
+      for (final Object? track in map['audioTracks'] as List<Object?>) {
+        if (track == null) {
+          continue;
+        }
+
+        if (track is! Map) {
+          continue;
+        }
+
+        final Map<String, Object?> trackAsMap = track.cast<String, Object?>();
+        final int? groupId = trackAsMap['groupId'] as int?;
+        final int? trackId = trackAsMap['trackId'] as int?;
+        final String? label = trackAsMap['label'] as String?;
+        final String? language = trackAsMap['language'] as String?;
+        final bool? isCurrent = trackAsMap['isCurrent'] as bool?;
+
+        if (groupId == null || trackId == null) {
+          continue;
+        }
+
+        audioTracks.add(AudioTrack(
+          groupId: groupId,
+          trackId: trackId,
+          label: label,
+          language: language,
+          isCurrent: isCurrent ?? false,
+        ));
+      }
+    } catch (e) {
+      // ignore - failing parsing audio tracks should not crash the player
+    }
+
+    return audioTracks;
   }
 
   @override

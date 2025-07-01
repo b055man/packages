@@ -119,6 +119,7 @@ static void *presentationSizeContext = &presentationSizeContext;
 static void *durationContext = &durationContext;
 static void *playbackLikelyToKeepUpContext = &playbackLikelyToKeepUpContext;
 static void *rateContext = &rateContext;
+static void *availableMediaCharacteristicsContext = &availableMediaCharacteristicsContext; 
 static NSString *const AVAssetKeyAvailableMediaCharacteristics =
     @"availableMediaCharacteristicsWithMediaSelectionOptions";
 
@@ -282,6 +283,12 @@ NS_INLINE CGFloat radiansToDegrees(CGFloat radians) {
   _frameUpdater = frameUpdater;
 
   AVAsset *asset = [item asset];
+
+  [asset addObserver:self
+            forKeyPath:AVAssetKeyAvailableMediaCharacteristics
+               options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew
+               context:availableMediaCharacteristicsContext];
+
   void (^assetCompletionHandler)(void) = ^{
     if ([asset statusOfValueForKey:@"tracks" error:nil] == AVKeyValueStatusLoaded) {
       NSArray *tracks = [asset tracksWithMediaType:AVMediaTypeVideo];
