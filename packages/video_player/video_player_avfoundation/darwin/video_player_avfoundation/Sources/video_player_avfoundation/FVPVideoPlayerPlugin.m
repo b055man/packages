@@ -120,8 +120,6 @@ static void *durationContext = &durationContext;
 static void *playbackLikelyToKeepUpContext = &playbackLikelyToKeepUpContext;
 static void *rateContext = &rateContext;
 static void *availableMediaCharacteristicsContext = &availableMediaCharacteristicsContext; 
-static NSString *const AVAssetKeyAvailableMediaCharacteristics =
-    @"availableMediaCharacteristicsWithMediaSelectionOptions";
 
 @implementation FVPVideoPlayer
 - (instancetype)initWithAsset:(NSString *)asset
@@ -285,7 +283,7 @@ NS_INLINE CGFloat radiansToDegrees(CGFloat radians) {
   AVAsset *asset = [item asset];
 
   [asset addObserver:self
-            forKeyPath:AVAssetKeyAvailableMediaCharacteristics
+            forKeyPath:@"availableMediaCharacteristicsWithMediaSelectionOptions"
                options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew
                context:availableMediaCharacteristicsContext];
 
@@ -406,6 +404,16 @@ NS_INLINE CGFloat radiansToDegrees(CGFloat radians) {
       _eventSink(
           @{@"event" : @"isPlayingStateUpdate", @"isPlaying" : player.rate > 0 ? @YES : @NO});
     }
+  } else if (context == availableMediaCharacteristicsContext) {
+    [self fetchAudioTracksWithCompletion:^(NSMutableArray<AudioTrack *> *audioTracks) {
+      if (audioTracks && self.eventSink) {
+        NSArray<NSDictionary *> *audioTracksAsMap = [audioTracks valueForKey:@"asMap"];
+        _eventSink(@{
+          @"event" : @"audioTracksUpdated",
+          @"audioTracks" : audioTracksAsMap,
+        });
+      }
+    }];
   }
 }
 
@@ -463,34 +471,39 @@ NS_INLINE CGFloat radiansToDegrees(CGFloat radians) {
       return;
     }
 
-    // initialize media groups, create audio tracks from them, and on completion, send the
-    // initialization event.
-    MediaGroupsProvider *provider = [[MediaGroupsProvider alloc] init];
-    [provider
-        fetchMediaGroupsFromAsset:asset
-                       completion:^(NSArray<AVMediaSelectionGroup *> *groups, NSError *error) {
-                         if (error) {
-                           NSLog(@"Error fetching media groups: %@", error);
-                           return;
-                         }
-
-                         self.mediaGroups = [groups mutableCopy];
-
-                         NSMutableArray<AudioTrack *> *audioTracks =
-                             [self createAudioTracksFromMediaGroups:groups];
-                         NSArray<NSDictionary *> *audioTracksAsMap =
-                             [audioTracks valueForKey:@"asMap"];
-
-                         _isInitialized = YES;
-                         _eventSink(@{
-                           @"event" : @"initialized",
-                           @"duration" : @(duration),
-                           @"width" : @(width),
-                           @"height" : @(height),
-                           @"audioTracks" : audioTracksAsMap,
-                         });
-                       }];
+    [self fetchAudioTracksWithCompletion:^(NSMutableArray<AudioTrack *> *audioTracks) {
+      if (audioTracks && self.eventSink) {
+        NSArray<NSDictionary *> *audioTracksAsMap = [audioTracks valueForKey:@"asMap"];
+        _isInitialized = YES;
+        _eventSink(@{
+          @"event" : @"initialized",
+          @"duration" : @([self duration]),
+          @"width" : @(self.player.currentItem.presentationSize.width),
+          @"height" : @(self.player.currentItem.presentationSize.height),
+          @"audioTracks" : audioTracksAsMap,
+        });
+      }
+    }];
   }
+}
+
+- (void)fetchAudioTracksWithCompletion:(void (^)(NSMutableArray<AudioTrack *> *audioTracks))completion {
+  AVAsset *asset = self.player.currentItem.asset;
+  MediaGroupsProvider *provider = [[MediaGroupsProvider alloc] init];
+
+  [provider
+      fetchMediaGroupsFromAsset:asset
+                     completion:^(NSArray<AVMediaSelectionGroup *> *groups, NSError *error) {
+                       if (error) {
+                         NSLog(@"Error fetching media groups: %@", error);
+                         completion(nil);
+                         return;
+                       }
+                       self.mediaGroups = [groups mutableCopy];
+                       NSMutableArray<AudioTrack *> *tracks =
+                           [self createAudioTracksFromMediaGroups:groups];
+                       completion(tracks);
+                     }];
 }
 
 - (NSMutableArray<AudioTrack *> *)createAudioTracksFromMediaGroups:
@@ -742,6 +755,7 @@ NS_INLINE CGFloat radiansToDegrees(CGFloat radians) {
 /// This is called from dealloc, so must not use any methods on self.
 - (void)removeKeyValueObservers {
   AVPlayerItem *currentItem = _player.currentItem;
+  [currentItem.asset removeObserver:self forKeyPath:@"availableMediaCharacteristicsWithMediaSelectionOptions"];
   [currentItem removeObserver:self forKeyPath:@"status"];
   [currentItem removeObserver:self forKeyPath:@"loadedTimeRanges"];
   [currentItem removeObserver:self forKeyPath:@"presentationSize"];

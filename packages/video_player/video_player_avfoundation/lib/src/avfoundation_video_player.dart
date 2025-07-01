@@ -121,6 +121,7 @@ class AVFoundationVideoPlayer extends VideoPlayerPlatform {
             duration: Duration(milliseconds: map['duration'] as int),
             size: Size((map['width'] as num?)?.toDouble() ?? 0.0,
                 (map['height'] as num?)?.toDouble() ?? 0.0),
+            audioTracks: _getAudioTracksFromMap(map),
           );
         case 'audioTracksChanged':
           return VideoEvent(
