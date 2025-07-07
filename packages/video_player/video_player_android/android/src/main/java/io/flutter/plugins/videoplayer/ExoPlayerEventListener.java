@@ -128,7 +128,6 @@ final class ExoPlayerEventListener implements Player.Listener {
       Tracks.Group tracksGroup = currentTracksGroups.get(i);
       TrackGroup trackGroup = tracksGroup.getMediaTrackGroup();
 
-      Log.i("ExoPlayerEventListener", "Processing track group nr: " + i + " of type: " + trackGroup.type);
       if (trackGroup.type == C.TRACK_TYPE_AUDIO) {
         for (int j = 0; j < trackGroup.length; j++) {
           Format format = trackGroup.getFormat(j);
@@ -136,7 +135,6 @@ final class ExoPlayerEventListener implements Player.Listener {
 
           AudioTrack audioTrack = new AudioTrack(i, j, format.language, format.label, isSelected);
           audioTracks.add(audioTrack);
-          Log.i("ExoPlayerEventListener", "AudioTrack added: " + audioTrack);
         }
       }
     }
