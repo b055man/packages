@@ -514,7 +514,6 @@ NS_INLINE CGFloat radiansToDegrees(CGFloat radians) {
   for (NSInteger groupIndex = 0; groupIndex < groups.count; groupIndex++) {
     AVMediaSelectionGroup *group = groups[groupIndex];
 
-    NSLog(@"Processing media selection group nr: %ld", (long)groupIndex);
     for (NSInteger optionIndex = 0; optionIndex < group.options.count; optionIndex++) {
       AVMediaSelectionOption *option = group.options[optionIndex];
       AVMediaSelectionOption *selectedOption =
@@ -531,7 +530,6 @@ NS_INLINE CGFloat radiansToDegrees(CGFloat radians) {
                                                           label:label
                                                         isCurrent:isCurrent];
 
-        NSLog(@"AudioTrack added: %@", track);
         [audioTracks addObject:track];
       }
     }

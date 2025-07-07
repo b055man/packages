@@ -25,7 +25,7 @@
 @property(nonatomic, copy, nullable) NSString *label;
 
 /// Indicates whether this audio track is currently selected or active in the media player.
-@property (nonatomic, assign, readonly) BOOL isCurrent;
+@property(nonatomic, assign, readonly) BOOL isCurrent;
 
 /**
  * Initializes and returns a newly allocated AudioTrack object with all properties.
@@ -36,6 +36,7 @@
  * @param trackId The identifier for the track within its group.
  * @param language The language for the track.
  * @param label The descriptive label for the track.
+ * @param isCurrent A boolean indicating if this track is currently selected in the media player.
  *
  * @return A newly initialized AudioTrack object.
  */
@@ -43,7 +44,7 @@
                         trackId:(int)trackId
                        language:(nullable NSString *)language
                           label:(nullable NSString *)label
-                          isCurrent:(BOOL)isCurrent NS_DESIGNATED_INITIALIZER;
+                      isCurrent:(BOOL)isCurrent NS_DESIGNATED_INITIALIZER;
 
 /**
  * A convenience initializer that creates an AudioTrack with only its required identifiers.

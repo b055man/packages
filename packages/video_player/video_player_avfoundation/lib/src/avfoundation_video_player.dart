@@ -109,8 +109,8 @@ class AVFoundationVideoPlayer extends VideoPlayerPlatform {
   }
 
   @override
-  Stream<VideoEvent> videoEventsFor(int playerId) {
-    return _eventChannelFor(playerId)
+  Stream<VideoEvent> videoEventsFor(int textureId) {
+    return _eventChannelFor(textureId)
         .receiveBroadcastStream()
         .map((dynamic event) {
       final Map<dynamic, dynamic> map = event as Map<dynamic, dynamic>;
