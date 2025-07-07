@@ -37,11 +37,11 @@ final class VideoPlayer {
   /**
    * Creates a video player.
    *
-   * @param context      application context.
-   * @param events       event callbacks.
+   * @param context application context.
+   * @param events event callbacks.
    * @param textureEntry texture to render to.
-   * @param asset        asset to play.
-   * @param options      options for playback.
+   * @param asset asset to play.
+   * @param options options for playback.
    * @return a video player instance.
    */
   @NonNull

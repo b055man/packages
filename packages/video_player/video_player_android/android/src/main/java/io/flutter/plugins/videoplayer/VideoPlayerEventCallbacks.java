@@ -19,10 +19,6 @@ import io.flutter.plugin.common.EventChannel;
 final class VideoPlayerEventCallbacks implements VideoPlayerCallbacks {
   private final EventChannel.EventSink eventSink;
 
-  private VideoPlayerEventCallbacks(EventChannel.EventSink eventSink) {
-    this.eventSink = eventSink;
-  }
-
   static VideoPlayerEventCallbacks bindTo(EventChannel eventChannel) {
     QueuingEventSink eventSink = new QueuingEventSink();
     eventChannel.setStreamHandler(
@@ -38,6 +34,10 @@ final class VideoPlayerEventCallbacks implements VideoPlayerCallbacks {
           }
         });
     return VideoPlayerEventCallbacks.withSink(eventSink);
+  }
+
+  private VideoPlayerEventCallbacks(EventChannel.EventSink eventSink) {
+    this.eventSink = eventSink;
   }
 
   @VisibleForTesting
