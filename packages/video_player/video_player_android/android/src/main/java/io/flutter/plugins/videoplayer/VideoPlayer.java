@@ -46,23 +46,23 @@ final class VideoPlayer {
    */
   @NonNull
   static VideoPlayer create(
-          Context context,
-          VideoPlayerCallbacks events,
-          TextureRegistry.SurfaceTextureEntry textureEntry,
-          VideoAsset asset,
-          VideoPlayerOptions options) {
+      Context context,
+      VideoPlayerCallbacks events,
+      TextureRegistry.SurfaceTextureEntry textureEntry,
+      VideoAsset asset,
+      VideoPlayerOptions options) {
     ExoPlayer.Builder builder =
-            new ExoPlayer.Builder(context).setMediaSourceFactory(asset.getMediaSourceFactory(context));
+        new ExoPlayer.Builder(context).setMediaSourceFactory(asset.getMediaSourceFactory(context));
     return new VideoPlayer(builder, events, textureEntry, asset.getMediaItem(), options);
   }
 
   @VisibleForTesting
   VideoPlayer(
-          ExoPlayer.Builder builder,
-          VideoPlayerCallbacks events,
-          TextureRegistry.SurfaceTextureEntry textureEntry,
-          MediaItem mediaItem,
-          VideoPlayerOptions options) {
+      ExoPlayer.Builder builder,
+      VideoPlayerCallbacks events,
+      TextureRegistry.SurfaceTextureEntry textureEntry,
+      MediaItem mediaItem,
+      VideoPlayerOptions options) {
     this.videoPlayerEvents = events;
     this.textureEntry = textureEntry;
     this.options = options;
@@ -89,8 +89,8 @@ final class VideoPlayer {
 
   private static void setAudioAttributes(ExoPlayer exoPlayer, boolean isMixMode) {
     exoPlayer.setAudioAttributes(
-            new AudioAttributes.Builder().setContentType(C.AUDIO_CONTENT_TYPE_MOVIE).build(),
-            !isMixMode);
+        new AudioAttributes.Builder().setContentType(C.AUDIO_CONTENT_TYPE_MOVIE).build(),
+        !isMixMode);
   }
 
   void play() {
@@ -153,9 +153,9 @@ final class VideoPlayer {
 
     TrackSelectionOverride override = new TrackSelectionOverride(group.getMediaTrackGroup(), audioTrack.trackId);
     exoPlayer.setTrackSelectionParameters(
-            exoPlayer.getTrackSelectionParameters().buildUpon()
-                    .setOverrideForType(override)
-                    .build()
+        exoPlayer.getTrackSelectionParameters().buildUpon()
+            .setOverrideForType(override)
+            .build()
     );
   }
 

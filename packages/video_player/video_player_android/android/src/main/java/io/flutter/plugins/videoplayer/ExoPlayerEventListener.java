@@ -44,7 +44,6 @@ final class ExoPlayerEventListener implements Player.Listener {
     }
   }
 
-  @OptIn(markerClass = UnstableApi.class)
   @SuppressWarnings("SuspiciousNameCombination")
   private void sendInitialized() {
     if (isInitialized) {
@@ -70,7 +69,6 @@ final class ExoPlayerEventListener implements Player.Listener {
         rotationCorrection = rotationDegrees;
       }
     }
-
     events.onInitialized(width, height, exoPlayer.getDuration(), rotationCorrection, getAudioTracksAsMaps());
   }
 
