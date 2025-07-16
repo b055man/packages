@@ -114,6 +114,10 @@ final class ExoPlayerEventListener implements Player.Listener {
   @OptIn(markerClass = UnstableApi.class)
   @Override
   public void onTracksChanged(@NonNull Tracks tracks) {
+    if (tracks.getGroups().isEmpty()) {
+      return; // Exit early, this is a transient state during a seek.
+    }
+
     Log.i("ExoPlayerEventListener", "Track change detected, updating audio tracks.");
     events.onAudioTracksChanged(getAudioTracksAsMaps());
   }
